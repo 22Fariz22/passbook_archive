@@ -5,8 +5,6 @@ import (
 	"github.com/22Fariz22/passbook/server/config"
 	"github.com/jmoiron/sqlx"
 	"time"
-
-	_ "github.com/Masterminds/squirrel"
 )
 
 const (

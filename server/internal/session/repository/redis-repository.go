@@ -9,7 +9,6 @@ import (
 	"github.com/22Fariz22/passbook/server/internal/session"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
-	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"time"
 )
@@ -32,9 +31,6 @@ func NewSessionRepository(redisClient *redis.Client, cfg *config.Config) session
 
 // Create session in redis
 func (s *sessionRepo) CreateSession(ctx context.Context, sess *entity.Session, expire int) (string, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "sessionRepo.CreateSession")
-	defer span.Finish()
-
 	sess.SessionID = uuid.New().String()
 	sessionKey := s.createKey(sess.SessionID)
 
@@ -50,9 +46,6 @@ func (s *sessionRepo) CreateSession(ctx context.Context, sess *entity.Session, e
 
 // Get session by id
 func (s *sessionRepo) GetSessionByID(ctx context.Context, sessionID string) (*entity.Session, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "sessionRepo.GetSessionByID")
-	defer span.Finish()
-
 	sessBytes, err := s.redisClient.Get(ctx, s.createKey(sessionID)).Bytes()
 	if err != nil {
 		return nil, errors.Wrap(err, "sessionRep.GetSessionByID.redisClient.Get")
@@ -67,9 +60,6 @@ func (s *sessionRepo) GetSessionByID(ctx context.Context, sessionID string) (*en
 
 // Delete session by id
 func (s *sessionRepo) DeleteByID(ctx context.Context, sessionID string) error {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "sessionRepo.DeleteByID")
-	defer span.Finish()
-
 	if err := s.redisClient.Del(ctx, s.createKey(sessionID)).Err(); err != nil {
 		return errors.Wrap(err, "sessionRepo.DeleteByID")
 	}

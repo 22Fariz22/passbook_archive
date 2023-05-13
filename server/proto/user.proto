@@ -2,10 +2,9 @@
 
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
+package passbook;
 
-package userService;
-option go_package = ".;userService";
+option go_package = "github.com/22fariz22/passbook";
 
 message Session {
   string session = 1;
@@ -13,34 +12,25 @@ message Session {
 
 message User {
   string uuid = 1;
-  string first_name = 2;
-  string last_name = 3;
-  string password = 5;
-  string email = 6;
-  string role = 7;
-  string avatar = 8;
-  google.protobuf.Timestamp created_at = 9;
-  google.protobuf.Timestamp updated_at = 10;
+  string login = 2;
+  string password = 3;
 }
 
 message RegisterRequest {
-  string email = 1;
-  string first_name = 2;
-  string last_name = 3;
-  string password = 5;
-  string role = 6;
-  string avatar = 7;
+  string login = 1;
+  string password = 2;
+
 }
 
 message RegisterResponse {
   User user = 1;
 }
 
-message FindByEmailRequest {
-  string email = 1;
+message FindByLoginRequest {
+  string login = 1;
 }
 
-message FindByEmailResponse {
+message FindByLoginResponse {
   User user = 1;
 }
 
@@ -53,7 +43,7 @@ message FindByIDResponse {
 }
 
 message LoginRequest {
-  string email = 1;
+  string login = 1;
   string password = 2;
 }
 
@@ -75,7 +65,7 @@ message LogoutResponse {}
 
 service UserService{
   rpc Register(RegisterRequest) returns (RegisterResponse);
-  rpc FindByEmail(FindByEmailRequest) returns (FindByEmailResponse);
+  rpc FindByEmail(FindByLoginRequest) returns (FindByLoginResponse);
   rpc FindByID(FindByIDRequest) returns (FindByIDResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc GetMe(GetMeRequest) returns(GetMeResponse);

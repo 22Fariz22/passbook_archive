@@ -3,7 +3,6 @@ package app
 import (
 	"github.com/22Fariz22/passbook/server/config"
 	"net"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -16,14 +15,11 @@ import (
 	userRepository "github.com/22Fariz22/passbook/server/internal/user/repository"
 	userUseCase "github.com/22Fariz22/passbook/server/internal/user/usecase"
 	"github.com/22Fariz22/passbook/server/pkg/logger"
-	"github.com/22Fariz22/passbook/server/pkg/metric"
 	userService "github.com/22Fariz22/passbook/server/proto"
 	"github.com/go-redis/redis/v8"
 	grpcrecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/jmoiron/sqlx"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
@@ -44,20 +40,13 @@ func NewAuthServer(logger logger.Logger, cfg *config.Config, db *sqlx.DB, redisC
 
 // Run service
 func (s *Server) Run() error {
-	metrics, err := metric.CreateMetrics(s.cfg.Metrics.URL, s.cfg.Metrics.ServiceName)
-	if err != nil {
-		s.logger.Errorf("CreateMetrics Error: %s", err)
-	}
-	s.logger.Info(
-		"Metrics available URL: %s, ServiceName: %s",
-		s.cfg.Metrics.URL,
-		s.cfg.Metrics.ServiceName,
-	)
 
-	im := interceptors.NewInterceptorManager(s.logger, s.cfg, metrics)
+	im := interceptors.NewInterceptorManager(s.logger, s.cfg)
+
 	userRepo := userRepository.NewUserPGRepository(s.db)
 	sessRepo := sessRepository.NewSessionRepository(s.redisClient, s.cfg)
 	userRedisRepo := userRepository.NewUserRedisRepo(s.redisClient, s.logger)
+
 	userUC := userUseCase.NewUserUseCase(s.logger, userRepo, userRedisRepo)
 	sessUC := sessUseCase.NewSessionUseCase(sessRepo, s.cfg)
 
@@ -76,7 +65,6 @@ func (s *Server) Run() error {
 		grpc.UnaryInterceptor(im.Logger),
 		grpc.ChainUnaryInterceptor(
 			grpc_ctxtags.UnaryServerInterceptor(),
-			grpc_prometheus.UnaryServerInterceptor,
 			grpcrecovery.UnaryServerInterceptor(),
 		),
 	)
@@ -87,9 +75,6 @@ func (s *Server) Run() error {
 
 	authGRPCServer := authServerGRPC.NewAuthServerGRPC(s.logger, s.cfg, userUC, sessUC)
 	userService.RegisterUserServiceServer(server, authGRPCServer)
-
-	grpc_prometheus.Register(server)
-	http.Handle("/metrics", promhttp.Handler())
 
 	go func() {
 		s.logger.Infof("Server is listening on port: %v", s.cfg.Server.Port)

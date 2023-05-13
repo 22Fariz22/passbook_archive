@@ -42,10 +42,7 @@ func (u *usersService) Register(ctx context.Context, r *userService.RegisterRequ
 
 // Login user with email and password
 func (u *usersService) Login(ctx context.Context, r *userService.LoginRequest) (*userService.LoginResponse, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "user.Create")
-	defer span.Finish()
-
-	email := r.GetEmail()
+	email := r.GetLogin()
 	if !utils.ValidateEmail(email) {
 		u.logger.Errorf("ValidateEmail: %v", email)
 		return nil, status.Errorf(codes.InvalidArgument, "ValidateEmail: %v", email)
@@ -69,11 +66,8 @@ func (u *usersService) Login(ctx context.Context, r *userService.LoginRequest) (
 }
 
 // Find user by email address
-func (u *usersService) FindByEmail(ctx context.Context, r *userService.FindByEmailRequest) (*userService.FindByEmailResponse, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "user.Create")
-	defer span.Finish()
-
-	email := r.GetEmail()
+func (u *usersService) FindByEmail(ctx context.Context, r *userService.FindByLoginRequest) (*userService.FindByLoginResponse, error) {
+	email := r.GetLogin()
 	if !utils.ValidateEmail(email) {
 		u.logger.Errorf("ValidateEmail: %v", email)
 		return nil, status.Errorf(codes.InvalidArgument, "ValidateEmail: %v", email)
@@ -85,14 +79,11 @@ func (u *usersService) FindByEmail(ctx context.Context, r *userService.FindByEma
 		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "userUC.FindByEmail: %v", err)
 	}
 
-	return &userService.FindByEmailResponse{User: u.userModelToProto(user)}, err
+	return &userService.FindByLoginResponse{User: u.userModelToProto(user)}, err
 }
 
 // Find user by uuid
 func (u *usersService) FindByID(ctx context.Context, r *userService.FindByIDRequest) (*userService.FindByIDResponse, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "user.Create")
-	defer span.Finish()
-
 	userUUID, err := uuid.Parse(r.GetUuid())
 	if err != nil {
 		u.logger.Errorf("uuid.Parse: %v", err)
@@ -110,9 +101,6 @@ func (u *usersService) FindByID(ctx context.Context, r *userService.FindByIDRequ
 
 // Get session id from, ctx metadata, find user by uuid and returns it
 func (u *usersService) GetMe(ctx context.Context, r *userService.GetMeRequest) (*userService.GetMeResponse, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "user.Create")
-	defer span.Finish()
-
 	sessID, err := u.getSessionIDFromCtx(ctx)
 	if err != nil {
 		u.logger.Errorf("getSessionIDFromCtx: %v", err)
@@ -139,9 +127,6 @@ func (u *usersService) GetMe(ctx context.Context, r *userService.GetMeRequest) (
 
 // Logout user, delete current session
 func (u *usersService) Logout(ctx context.Context, request *userService.LogoutRequest) (*userService.LogoutResponse, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "user.Create")
-	defer span.Finish()
-
 	sessID, err := u.getSessionIDFromCtx(ctx)
 	if err != nil {
 		u.logger.Errorf("getSessionIDFromCtx: %v", err)
@@ -157,14 +142,8 @@ func (u *usersService) Logout(ctx context.Context, request *userService.LogoutRe
 }
 
 func (u *usersService) registerReqToUserModel(r *userService.RegisterRequest) (*entity.User, error) {
-	//avatar := r.GetAvatar()
 	candidate := &entity.User{
-		Login: r.GetLogin(),
-		//Email:     r.GetEmail(),
-		//FirstName: r.GetFirstName(),
-		//LastName:  r.GetLastName(),
-		//Role:      r.GetRole(),
-		//Avatar:    &avatar,
+		Login:    r.GetLogin(),
 		Password: r.GetPassword(),
 	}
 
@@ -177,16 +156,9 @@ func (u *usersService) registerReqToUserModel(r *userService.RegisterRequest) (*
 
 func (u *usersService) userModelToProto(user *entity.User) *userService.User {
 	userProto := &userService.User{
-		Uuid:  user.UserID.String(),
-		Login: user.Login,
-		//FirstName: user.FirstName,
-		//LastName:  user.LastName,
+		Uuid:     user.UserID.String(),
+		Login:    user.Login,
 		Password: user.Password,
-		//Email:     user.Email,
-		//Role:      user.Role,
-		//Avatar:    user.GetAvatar(),
-		//CreatedAt: timestamppb.New(user.CreatedAt),
-		//UpdatedAt: timestamppb.New(user.UpdatedAt),
 	}
 	return userProto
 }

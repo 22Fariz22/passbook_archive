@@ -21,8 +21,8 @@ type InterceptorManager struct {
 }
 
 // InterceptorManager constructor
-func NewInterceptorManager(logger logger.Logger, cfg *config.Config, metr metric.Metrics) *InterceptorManager {
-	return &InterceptorManager{logger: logger, cfg: cfg, metr: metr}
+func NewInterceptorManager(logger logger.Logger, cfg *config.Config) *InterceptorManager {
+	return &InterceptorManager{logger: logger, cfg: cfg}
 }
 
 // Logger Interceptor
