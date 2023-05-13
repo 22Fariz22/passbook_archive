@@ -42,10 +42,7 @@ func (u *userUseCase) Register(ctx context.Context, user *entity.User) (*entity.
 }
 
 // Find use by email address
-func (u *userUseCase) FindByEmail(ctx context.Context, login string) (*entity.User, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "UserUseCase.FindByLogin")
-	defer span.Finish()
-
+func (u *userUseCase) FindByLogin(ctx context.Context, login string) (*entity.User, error) {
 	findByLogin, err := u.userPgRepo.FindByLogin(ctx, login)
 	if err != nil {
 		return nil, errors.Wrap(err, "userPgRepo.FindByLogin")

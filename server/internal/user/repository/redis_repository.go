@@ -8,7 +8,6 @@ import (
 	"github.com/22Fariz22/passbook/server/pkg/grpc_errors"
 	"github.com/22Fariz22/passbook/server/pkg/logger"
 	"github.com/go-redis/redis/v8"
-	"github.com/opentracing/opentracing-go"
 	"time"
 )
 
@@ -31,9 +30,6 @@ func NewUserRedisRepo(redisClient *redis.Client, logger logger.Logger) *userRedi
 
 // Get user by id
 func (r *userRedisRepo) GetByIDCtx(ctx context.Context, key string) (*entity.User, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "userRedisRepo.GetByIDCtx")
-	defer span.Finish()
-
 	userBytes, err := r.redisClient.Get(ctx, r.createKey(key)).Bytes()
 	if err != nil {
 		if err != redis.Nil {
@@ -51,9 +47,6 @@ func (r *userRedisRepo) GetByIDCtx(ctx context.Context, key string) (*entity.Use
 
 // Cache user with duration in seconds
 func (r *userRedisRepo) SetUserCtx(ctx context.Context, key string, seconds int, user *entity.User) error {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "userRedisRepo.SetUserCtx")
-	defer span.Finish()
-
 	userBytes, err := json.Marshal(user)
 	if err != nil {
 		return err

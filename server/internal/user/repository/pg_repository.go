@@ -28,12 +28,8 @@ func (r *UserRepository) Create(ctx context.Context, user *entity.User) (*entity
 	if err := r.db.QueryRowxContext(
 		ctx,
 		createUserQuery,
-		//user.FirstName,
-		//user.LastName,
-		//user.Email,
+		user.Login,
 		user.Password,
-		//user.Role,
-		//user.Avatar,
 	).StructScan(createdUser); err != nil {
 		return nil, errors.Wrap(err, "Create.QueryRowxContext")
 	}
@@ -43,9 +39,6 @@ func (r *UserRepository) Create(ctx context.Context, user *entity.User) (*entity
 
 // Find by user email address
 func (r *UserRepository) FindByLogin(ctx context.Context, login string) (*entity.User, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "UserRepository.FindByLogin")
-	defer span.Finish()
-
 	user := &entity.User{}
 	if err := r.db.GetContext(ctx, user, findByLoginQuery, login); err != nil {
 		return nil, errors.Wrap(err, "FindByLogin.GetContext")

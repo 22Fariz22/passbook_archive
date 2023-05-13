@@ -66,14 +66,14 @@ func (u *usersService) Login(ctx context.Context, r *userService.LoginRequest) (
 }
 
 // Find user by email address
-func (u *usersService) FindByEmail(ctx context.Context, r *userService.FindByLoginRequest) (*userService.FindByLoginResponse, error) {
-	email := r.GetLogin()
-	if !utils.ValidateEmail(email) {
-		u.logger.Errorf("ValidateEmail: %v", email)
-		return nil, status.Errorf(codes.InvalidArgument, "ValidateEmail: %v", email)
-	}
+func (u *usersService) FindByLogin(ctx context.Context, r *userService.FindByLoginRequest) (*userService.FindByLoginResponse, error) {
+	login := r.GetLogin()
+	//if !utils.ValidateEmail(email) {
+	//	u.logger.Errorf("ValidateEmail: %v", email)
+	//	return nil, status.Errorf(codes.InvalidArgument, "ValidateEmail: %v", email)
+	//}
 
-	user, err := u.userUC.FindByEmail(ctx, email)
+	user, err := u.userUC.FindByLogin(ctx, login)
 	if err != nil {
 		u.logger.Errorf("userUC.FindByEmail: %v", err)
 		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "userUC.FindByEmail: %v", err)
