@@ -18,11 +18,6 @@ type userRedisRepo struct {
 	logger      logger.Logger
 }
 
-func (r *userRedisRepo) DeleteUserCtx(ctx context.Context, key string) error {
-	//TODO implement me
-	panic("implement me")
-}
-
 // Auth redis repository constructor
 func NewUserRedisRepo(redisClient *redis.Client, logger logger.Logger) *userRedisRepo {
 	return &userRedisRepo{redisClient: redisClient, basePrefix: "user:", logger: logger}
@@ -55,13 +50,10 @@ func (r *userRedisRepo) SetUserCtx(ctx context.Context, key string, seconds int,
 	return r.redisClient.Set(ctx, r.createKey(key), userBytes, time.Second*time.Duration(seconds)).Err()
 }
 
-//// Delete user by key
-//func (r *userRedisRepo) DeleteUserCtx(ctx context.Context, key string) error {
-//	span, ctx := opentracing.StartSpanFromContext(ctx, "userRedisRepo.DeleteUserCtx")
-//	defer span.Finish()
-//
-//	return r.redisClient.Del(ctx, r.createKey(key)).Err()
-//}
+// Delete user by key
+func (r *userRedisRepo) DeleteUserCtx(ctx context.Context, key string) error {
+	return r.redisClient.Del(ctx, r.createKey(key)).Err()
+}
 
 func (r *userRedisRepo) createKey(value string) string {
 	return fmt.Sprintf("%s: %s", r.basePrefix, value)

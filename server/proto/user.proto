@@ -58,7 +58,6 @@ message GetMeResponse {
   User user = 1;
 }
 
-
 message LogoutRequest{}
 
 message LogoutResponse {}
@@ -71,3 +70,6 @@ service UserService{
   rpc GetMe(GetMeRequest) returns(GetMeResponse);
   rpc Logout(LogoutRequest) returns(LogoutResponse);
 }
+
+
+
