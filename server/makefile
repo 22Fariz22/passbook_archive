@@ -2,7 +2,7 @@
 # Main
 
 run:
-	go run ./cmd/auth/main.go
+	go run ./cmd/passbook/main.go
 
 build:
 	go build ./cmd/auth/main.go

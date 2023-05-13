@@ -40,7 +40,6 @@ func NewAuthServer(logger logger.Logger, cfg *config.Config, db *sqlx.DB, redisC
 
 // Run service
 func (s *Server) Run() error {
-
 	im := interceptors.NewInterceptorManager(s.logger, s.cfg)
 
 	userRepo := userRepository.NewUserPGRepository(s.db)
