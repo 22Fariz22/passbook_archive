@@ -65,7 +65,7 @@ message LogoutResponse {}
 
 service UserService{
   rpc Register(RegisterRequest) returns (RegisterResponse);
-  rpc FindByEmail(FindByLoginRequest) returns (FindByLoginResponse);
+  rpc FindByLogin(FindByLoginRequest) returns (FindByLoginResponse);
   rpc FindByID(FindByIDRequest) returns (FindByIDResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc GetMe(GetMeRequest) returns(GetMeResponse);

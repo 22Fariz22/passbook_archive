@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	UserService_Register_FullMethodName    = "/passbook.UserService/Register"
-	UserService_FindByEmail_FullMethodName = "/passbook.UserService/FindByEmail"
+	UserService_FindByLogin_FullMethodName = "/passbook.UserService/FindByLogin"
 	UserService_FindByID_FullMethodName    = "/passbook.UserService/FindByID"
 	UserService_Login_FullMethodName       = "/passbook.UserService/Login"
 	UserService_GetMe_FullMethodName       = "/passbook.UserService/GetMe"
@@ -34,7 +34,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
-	FindByEmail(ctx context.Context, in *FindByLoginRequest, opts ...grpc.CallOption) (*FindByLoginResponse, error)
+	FindByLogin(ctx context.Context, in *FindByLoginRequest, opts ...grpc.CallOption) (*FindByLoginResponse, error)
 	FindByID(ctx context.Context, in *FindByIDRequest, opts ...grpc.CallOption) (*FindByIDResponse, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	GetMe(ctx context.Context, in *GetMeRequest, opts ...grpc.CallOption) (*GetMeResponse, error)
@@ -58,9 +58,9 @@ func (c *userServiceClient) Register(ctx context.Context, in *RegisterRequest, o
 	return out, nil
 }
 
-func (c *userServiceClient) FindByEmail(ctx context.Context, in *FindByLoginRequest, opts ...grpc.CallOption) (*FindByLoginResponse, error) {
+func (c *userServiceClient) FindByLogin(ctx context.Context, in *FindByLoginRequest, opts ...grpc.CallOption) (*FindByLoginResponse, error) {
 	out := new(FindByLoginResponse)
-	err := c.cc.Invoke(ctx, UserService_FindByEmail_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, UserService_FindByLogin_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func (c *userServiceClient) Logout(ctx context.Context, in *LogoutRequest, opts 
 // for forward compatibility
 type UserServiceServer interface {
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
-	FindByEmail(context.Context, *FindByLoginRequest) (*FindByLoginResponse, error)
+	FindByLogin(context.Context, *FindByLoginRequest) (*FindByLoginResponse, error)
 	FindByID(context.Context, *FindByIDRequest) (*FindByIDResponse, error)
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error)
@@ -123,8 +123,8 @@ type UnimplementedUserServiceServer struct {
 func (UnimplementedUserServiceServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedUserServiceServer) FindByEmail(context.Context, *FindByLoginRequest) (*FindByLoginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method FindByEmail not implemented")
+func (UnimplementedUserServiceServer) FindByLogin(context.Context, *FindByLoginRequest) (*FindByLoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindByLogin not implemented")
 }
 func (UnimplementedUserServiceServer) FindByID(context.Context, *FindByIDRequest) (*FindByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindByID not implemented")
@@ -169,20 +169,20 @@ func _UserService_Register_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_FindByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserService_FindByLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FindByLoginRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).FindByEmail(ctx, in)
+		return srv.(UserServiceServer).FindByLogin(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserService_FindByEmail_FullMethodName,
+		FullMethod: UserService_FindByLogin_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).FindByEmail(ctx, req.(*FindByLoginRequest))
+		return srv.(UserServiceServer).FindByLogin(ctx, req.(*FindByLoginRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -271,8 +271,8 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_Register_Handler,
 		},
 		{
-			MethodName: "FindByEmail",
-			Handler:    _UserService_FindByEmail_Handler,
+			MethodName: "FindByLogin",
+			Handler:    _UserService_FindByLogin_Handler,
 		},
 		{
 			MethodName: "FindByID",
