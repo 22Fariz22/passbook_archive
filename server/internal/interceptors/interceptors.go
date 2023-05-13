@@ -3,10 +3,7 @@ package interceptors
 import (
 	"context"
 	"github.com/22Fariz22/passbook/server/config"
-	"github.com/22Fariz22/passbook/server/pkg/grpc_errors"
 	"github.com/22Fariz22/passbook/server/pkg/logger"
-	"github.com/22Fariz22/passbook/server/pkg/metric"
-	"net/http"
 	"time"
 
 	"google.golang.org/grpc"
@@ -17,7 +14,6 @@ import (
 type InterceptorManager struct {
 	logger logger.Logger
 	cfg    *config.Config
-	metr   metric.Metrics
 }
 
 // InterceptorManager constructor
@@ -33,17 +29,4 @@ func (im *InterceptorManager) Logger(ctx context.Context, req interface{}, info 
 	im.logger.Infof("Method: %s, Time: %v, Metadata: %v, Err: %v", info.FullMethod, time.Since(start), md, err)
 
 	return reply, err
-}
-
-func (im *InterceptorManager) Metrics(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	start := time.Now()
-	resp, err := handler(ctx, req)
-	var status = http.StatusOK
-	if err != nil {
-		status = grpc_errors.MapGRPCErrCodeToHttpStatus(grpc_errors.ParseGRPCErrStatusCode(err))
-	}
-	im.metr.ObserveResponseTime(status, info.FullMethod, info.FullMethod, time.Since(start).Seconds())
-	im.metr.IncHits(status, info.FullMethod, info.FullMethod)
-
-	return resp, err
 }

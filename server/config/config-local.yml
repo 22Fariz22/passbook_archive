@@ -1,6 +1,6 @@
 server:
   AppVersion: 1.0.0
-  Port: :5000
+  Port: :5001
   PprofPort: :5555
   Mode: Development
   JwtSecretKey: secretkey
@@ -27,8 +27,8 @@ postgres:
   PostgresqlHost: localhost
   PostgresqlPort: 5432
   PostgresqlUser: postgres
-  PostgresqlPassword: postgres
-  PostgresqlDbname: auth_db
+  PostgresqlPassword: 55555
+  PostgresqlDbname: passbook
   PostgresqlSslmode: false
   PgDriver: pgx
 
@@ -53,12 +53,4 @@ session:
   Name: session-id
   Prefix: api-session
   Expire: 3600
-
-metrics:
-  Url: 0.0.0.0:7070
-  ServiceName: auth_microservice
-
-jaeger:
-  Host: localhost:6831
-  ServiceName: Auth_GRPC
-  LogSpans: false
+gSpans: false
