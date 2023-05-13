@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/22Fariz22/passbook/server/config"
 	"github.com/22Fariz22/passbook/server/internal/app"
 	"github.com/22Fariz22/passbook/server/pkg/logger"
@@ -20,10 +19,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Loading config: %v", err)
 	}
-
-	fmt.Println(cfg.Postgres.PostgresqlPort)
-	fmt.Println(cfg.Postgres.PostgresqlPassword)
-	fmt.Println(cfg.Postgres.PostgresqlUser)
 
 	appLogger := logger.NewAPILogger(cfg)
 	appLogger.InitLogger()

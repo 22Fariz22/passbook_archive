@@ -9,7 +9,7 @@ import (
 )
 
 type usersService struct {
-	pb.UnsafeUserServiceServer
+	pb.UnimplementedUserServiceServer
 	logger logger.Logger
 	cfg    *config.Config
 	userUC user.UserUseCase
@@ -19,9 +19,10 @@ type usersService struct {
 // Auth service constructor
 func NewAuthServerGRPC(logger logger.Logger, cfg *config.Config, userUC user.UserUseCase, sessUC session.SessionUseCase) *usersService {
 	return &usersService{
-		logger: logger,
-		cfg:    cfg,
-		userUC: userUC,
-		sessUC: sessUC,
+		UnimplementedUserServiceServer: pb.UnimplementedUserServiceServer{},
+		logger:                         logger,
+		cfg:                            cfg,
+		userUC:                         userUC,
+		sessUC:                         sessUC,
 	}
 }

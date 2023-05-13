@@ -42,13 +42,13 @@ func (u *usersService) Register(ctx context.Context, r *userService.RegisterRequ
 
 // Login user with email and password
 func (u *usersService) Login(ctx context.Context, r *userService.LoginRequest) (*userService.LoginResponse, error) {
-	email := r.GetLogin()
-	if !utils.ValidateEmail(email) {
-		u.logger.Errorf("ValidateEmail: %v", email)
-		return nil, status.Errorf(codes.InvalidArgument, "ValidateEmail: %v", email)
-	}
+	login := r.GetLogin()
+	//if !utils.ValidateEmail(email) {
+	//	u.logger.Errorf("ValidateEmail: %v", email)
+	//	return nil, status.Errorf(codes.InvalidArgument, "ValidateEmail: %v", email)
+	//}
 
-	user, err := u.userUC.Login(ctx, email, r.GetPassword())
+	user, err := u.userUC.Login(ctx, login, r.GetPassword())
 	if err != nil {
 		u.logger.Errorf("userUC.Login: %v", err)
 		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "Login: %v", err)
