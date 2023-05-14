@@ -21,12 +21,19 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	UserService_Register_FullMethodName    = "/passbook.UserService/Register"
-	UserService_FindByLogin_FullMethodName = "/passbook.UserService/FindByLogin"
-	UserService_FindByID_FullMethodName    = "/passbook.UserService/FindByID"
-	UserService_Login_FullMethodName       = "/passbook.UserService/Login"
-	UserService_GetMe_FullMethodName       = "/passbook.UserService/GetMe"
-	UserService_Logout_FullMethodName      = "/passbook.UserService/Logout"
+	UserService_Register_FullMethodName     = "/passbook.UserService/Register"
+	UserService_FindByLogin_FullMethodName  = "/passbook.UserService/FindByLogin"
+	UserService_FindByID_FullMethodName     = "/passbook.UserService/FindByID"
+	UserService_Login_FullMethodName        = "/passbook.UserService/Login"
+	UserService_GetMe_FullMethodName        = "/passbook.UserService/GetMe"
+	UserService_Logout_FullMethodName       = "/passbook.UserService/Logout"
+	UserService_AddAccount_FullMethodName   = "/passbook.UserService/AddAccount"
+	UserService_AddText_FullMethodName      = "/passbook.UserService/AddText"
+	UserService_AddBinary_FullMethodName    = "/passbook.UserService/AddBinary"
+	UserService_AddCard_FullMethodName      = "/passbook.UserService/AddCard"
+	UserService_GetByTitle_FullMethodName   = "/passbook.UserService/GetByTitle"
+	UserService_GetFullList_FullMethodName  = "/passbook.UserService/GetFullList"
+	UserService_GetAllTitles_FullMethodName = "/passbook.UserService/GetAllTitles"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -39,6 +46,13 @@ type UserServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	GetMe(ctx context.Context, in *GetMeRequest, opts ...grpc.CallOption) (*GetMeResponse, error)
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
+	AddAccount(ctx context.Context, in *AddAccountRequest, opts ...grpc.CallOption) (*AddAccountResponse, error)
+	AddText(ctx context.Context, in *AddTextRequest, opts ...grpc.CallOption) (*AddTextResponse, error)
+	AddBinary(ctx context.Context, in *AddBinaryRequest, opts ...grpc.CallOption) (*AddBinaryResponse, error)
+	AddCard(ctx context.Context, in *AddCardRequest, opts ...grpc.CallOption) (*AddCardResponse, error)
+	GetByTitle(ctx context.Context, in *GetByTitleRequest, opts ...grpc.CallOption) (*GetByTitleResponse, error)
+	GetFullList(ctx context.Context, in *GetFullListRequest, opts ...grpc.CallOption) (*GetFullListResponse, error)
+	GetAllTitles(ctx context.Context, in *GetAllTitlesRequest, opts ...grpc.CallOption) (*GetAllTitlesResponse, error)
 }
 
 type userServiceClient struct {
@@ -103,6 +117,69 @@ func (c *userServiceClient) Logout(ctx context.Context, in *LogoutRequest, opts 
 	return out, nil
 }
 
+func (c *userServiceClient) AddAccount(ctx context.Context, in *AddAccountRequest, opts ...grpc.CallOption) (*AddAccountResponse, error) {
+	out := new(AddAccountResponse)
+	err := c.cc.Invoke(ctx, UserService_AddAccount_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) AddText(ctx context.Context, in *AddTextRequest, opts ...grpc.CallOption) (*AddTextResponse, error) {
+	out := new(AddTextResponse)
+	err := c.cc.Invoke(ctx, UserService_AddText_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) AddBinary(ctx context.Context, in *AddBinaryRequest, opts ...grpc.CallOption) (*AddBinaryResponse, error) {
+	out := new(AddBinaryResponse)
+	err := c.cc.Invoke(ctx, UserService_AddBinary_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) AddCard(ctx context.Context, in *AddCardRequest, opts ...grpc.CallOption) (*AddCardResponse, error) {
+	out := new(AddCardResponse)
+	err := c.cc.Invoke(ctx, UserService_AddCard_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetByTitle(ctx context.Context, in *GetByTitleRequest, opts ...grpc.CallOption) (*GetByTitleResponse, error) {
+	out := new(GetByTitleResponse)
+	err := c.cc.Invoke(ctx, UserService_GetByTitle_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetFullList(ctx context.Context, in *GetFullListRequest, opts ...grpc.CallOption) (*GetFullListResponse, error) {
+	out := new(GetFullListResponse)
+	err := c.cc.Invoke(ctx, UserService_GetFullList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetAllTitles(ctx context.Context, in *GetAllTitlesRequest, opts ...grpc.CallOption) (*GetAllTitlesResponse, error) {
+	out := new(GetAllTitlesResponse)
+	err := c.cc.Invoke(ctx, UserService_GetAllTitles_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -113,6 +190,13 @@ type UserServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	GetMe(context.Context, *GetMeRequest) (*GetMeResponse, error)
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
+	AddAccount(context.Context, *AddAccountRequest) (*AddAccountResponse, error)
+	AddText(context.Context, *AddTextRequest) (*AddTextResponse, error)
+	AddBinary(context.Context, *AddBinaryRequest) (*AddBinaryResponse, error)
+	AddCard(context.Context, *AddCardRequest) (*AddCardResponse, error)
+	GetByTitle(context.Context, *GetByTitleRequest) (*GetByTitleResponse, error)
+	GetFullList(context.Context, *GetFullListRequest) (*GetFullListResponse, error)
+	GetAllTitles(context.Context, *GetAllTitlesRequest) (*GetAllTitlesResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -137,6 +221,27 @@ func (UnimplementedUserServiceServer) GetMe(context.Context, *GetMeRequest) (*Ge
 }
 func (UnimplementedUserServiceServer) Logout(context.Context, *LogoutRequest) (*LogoutResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
+func (UnimplementedUserServiceServer) AddAccount(context.Context, *AddAccountRequest) (*AddAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddAccount not implemented")
+}
+func (UnimplementedUserServiceServer) AddText(context.Context, *AddTextRequest) (*AddTextResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddText not implemented")
+}
+func (UnimplementedUserServiceServer) AddBinary(context.Context, *AddBinaryRequest) (*AddBinaryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddBinary not implemented")
+}
+func (UnimplementedUserServiceServer) AddCard(context.Context, *AddCardRequest) (*AddCardResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddCard not implemented")
+}
+func (UnimplementedUserServiceServer) GetByTitle(context.Context, *GetByTitleRequest) (*GetByTitleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByTitle not implemented")
+}
+func (UnimplementedUserServiceServer) GetFullList(context.Context, *GetFullListRequest) (*GetFullListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFullList not implemented")
+}
+func (UnimplementedUserServiceServer) GetAllTitles(context.Context, *GetAllTitlesRequest) (*GetAllTitlesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllTitles not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -259,6 +364,132 @@ func _UserService_Logout_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_AddAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).AddAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_AddAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).AddAccount(ctx, req.(*AddAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_AddText_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddTextRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).AddText(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_AddText_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).AddText(ctx, req.(*AddTextRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_AddBinary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddBinaryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).AddBinary(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_AddBinary_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).AddBinary(ctx, req.(*AddBinaryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_AddCard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddCardRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).AddCard(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_AddCard_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).AddCard(ctx, req.(*AddCardRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetByTitle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetByTitleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetByTitle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetByTitle_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetByTitle(ctx, req.(*GetByTitleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetFullList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFullListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetFullList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetFullList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetFullList(ctx, req.(*GetFullListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetAllTitles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllTitlesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetAllTitles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetAllTitles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetAllTitles(ctx, req.(*GetAllTitlesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -289,6 +520,34 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Logout",
 			Handler:    _UserService_Logout_Handler,
+		},
+		{
+			MethodName: "AddAccount",
+			Handler:    _UserService_AddAccount_Handler,
+		},
+		{
+			MethodName: "AddText",
+			Handler:    _UserService_AddText_Handler,
+		},
+		{
+			MethodName: "AddBinary",
+			Handler:    _UserService_AddBinary_Handler,
+		},
+		{
+			MethodName: "AddCard",
+			Handler:    _UserService_AddCard_Handler,
+		},
+		{
+			MethodName: "GetByTitle",
+			Handler:    _UserService_GetByTitle_Handler,
+		},
+		{
+			MethodName: "GetFullList",
+			Handler:    _UserService_GetFullList_Handler,
+		},
+		{
+			MethodName: "GetAllTitles",
+			Handler:    _UserService_GetAllTitles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

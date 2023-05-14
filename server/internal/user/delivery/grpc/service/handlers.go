@@ -9,7 +9,6 @@ import (
 	userService "github.com/22Fariz22/passbook/server/proto"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
-	"github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
@@ -17,9 +16,6 @@ import (
 
 // Register new user
 func (u *usersService) Register(ctx context.Context, r *userService.RegisterRequest) (*userService.RegisterResponse, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "user.Create")
-	defer span.Finish()
-
 	user, err := u.registerReqToUserModel(r)
 	if err != nil {
 		u.logger.Errorf("registerReqToUserModel: %v", err)
@@ -43,10 +39,6 @@ func (u *usersService) Register(ctx context.Context, r *userService.RegisterRequ
 // Login user with email and password
 func (u *usersService) Login(ctx context.Context, r *userService.LoginRequest) (*userService.LoginResponse, error) {
 	login := r.GetLogin()
-	//if !utils.ValidateEmail(email) {
-	//	u.logger.Errorf("ValidateEmail: %v", email)
-	//	return nil, status.Errorf(codes.InvalidArgument, "ValidateEmail: %v", email)
-	//}
 
 	user, err := u.userUC.Login(ctx, login, r.GetPassword())
 	if err != nil {
@@ -68,10 +60,6 @@ func (u *usersService) Login(ctx context.Context, r *userService.LoginRequest) (
 // Find user by email address
 func (u *usersService) FindByLogin(ctx context.Context, r *userService.FindByLoginRequest) (*userService.FindByLoginResponse, error) {
 	login := r.GetLogin()
-	//if !utils.ValidateEmail(email) {
-	//	u.logger.Errorf("ValidateEmail: %v", email)
-	//	return nil, status.Errorf(codes.InvalidArgument, "ValidateEmail: %v", email)
-	//}
 
 	user, err := u.userUC.FindByLogin(ctx, login)
 	if err != nil {
@@ -139,6 +127,174 @@ func (u *usersService) Logout(ctx context.Context, request *userService.LogoutRe
 	}
 
 	return &userService.LogoutResponse{}, nil
+}
+
+func (u *usersService) AddAccount(ctx context.Context, request *userService.AddAccountRequest) (*userService.AddAccountResponse, error) {
+	sessID, err := u.getSessionIDFromCtx(ctx)
+	if err != nil {
+		u.logger.Errorf("getSessionIDFromCtx: %v", err)
+		return nil, err
+	}
+
+	session, err := u.sessUC.GetSessionByID(ctx, sessID)
+	if err != nil {
+		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
+		if errors.Is(err, redis.Nil) {
+			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
+		}
+		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
+	}
+
+	err = u.userUC.AddAccount(ctx, session.UserID, request.GetTitle(), request.GetData())
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+func (u *usersService) AddText(ctx context.Context, request *userService.AddTextRequest) (*userService.AddTextResponse, error) {
+	sessID, err := u.getSessionIDFromCtx(ctx)
+	if err != nil {
+		u.logger.Errorf("getSessionIDFromCtx: %v", err)
+		return nil, err
+	}
+
+	session, err := u.sessUC.GetSessionByID(ctx, sessID)
+	if err != nil {
+		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
+		if errors.Is(err, redis.Nil) {
+			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
+		}
+		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
+	}
+
+	err = u.userUC.AddText(ctx, session.UserID, request.GetTitle(), request.GetData())
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+func (u *usersService) AddBinary(ctx context.Context, request *userService.AddBinaryRequest) (*userService.AddBinaryResponse, error) {
+	sessID, err := u.getSessionIDFromCtx(ctx)
+	if err != nil {
+		u.logger.Errorf("getSessionIDFromCtx: %v", err)
+		return nil, err
+	}
+
+	session, err := u.sessUC.GetSessionByID(ctx, sessID)
+	if err != nil {
+		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
+		if errors.Is(err, redis.Nil) {
+			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
+		}
+		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
+	}
+
+	err = u.userUC.AddBinary(ctx, session.UserID, request.GetTitle(), request.GetData())
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+func (u *usersService) AddCard(ctx context.Context, request *userService.AddCardRequest) (*userService.AddCardResponse, error) {
+	sessID, err := u.getSessionIDFromCtx(ctx)
+	if err != nil {
+		u.logger.Errorf("getSessionIDFromCtx: %v", err)
+		return nil, err
+	}
+
+	session, err := u.sessUC.GetSessionByID(ctx, sessID)
+	if err != nil {
+		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
+		if errors.Is(err, redis.Nil) {
+			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
+		}
+		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
+	}
+
+	err = u.userUC.AddCard(ctx, session.UserID, request.GetTitle(), request.GetData())
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+func (u *usersService) GetByTitle(ctx context.Context, request *userService.GetByTitleRequest) (*userService.GetByTitleResponse, error) {
+	sessID, err := u.getSessionIDFromCtx(ctx)
+	if err != nil {
+		u.logger.Errorf("getSessionIDFromCtx: %v", err)
+		return nil, err
+	}
+
+	session, err := u.sessUC.GetSessionByID(ctx, sessID)
+	if err != nil {
+		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
+		if errors.Is(err, redis.Nil) {
+			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
+		}
+		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
+	}
+
+	data, err := u.userUC.GetByTitle(ctx, session.UserID, request.GetTitle())
+	if err != nil {
+		return nil, err
+	}
+
+	return &userService.GetByTitleResponse{Data: data}, err
+}
+
+func (u *usersService) GetFullList(ctx context.Context, request *userService.GetFullListRequest) (*userService.GetFullListResponse, error) {
+	sessID, err := u.getSessionIDFromCtx(ctx)
+	if err != nil {
+		u.logger.Errorf("getSessionIDFromCtx: %v", err)
+		return nil, err
+	}
+
+	session, err := u.sessUC.GetSessionByID(ctx, sessID)
+	if err != nil {
+		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
+		if errors.Is(err, redis.Nil) {
+			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
+		}
+		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
+	}
+
+	data, err := u.userUC.GetFullList(ctx, session.UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &userService.GetFullListResponse{Data: data}, nil
+}
+
+func (u *usersService) GetAllTitles(ctx context.Context, request *userService.GetAllTitlesRequest) (*userService.GetAllTitlesResponse, error) {
+	sessID, err := u.getSessionIDFromCtx(ctx)
+	if err != nil {
+		u.logger.Errorf("getSessionIDFromCtx: %v", err)
+		return nil, err
+	}
+
+	session, err := u.sessUC.GetSessionByID(ctx, sessID)
+	if err != nil {
+		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
+		if errors.Is(err, redis.Nil) {
+			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
+		}
+		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
+	}
+
+	data, err := u.userUC.GetAllTitles(ctx, session.UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &userService.GetAllTitlesResponse{Data: data}, nil
 }
 
 func (u *usersService) registerReqToUserModel(r *userService.RegisterRequest) (*entity.User, error) {

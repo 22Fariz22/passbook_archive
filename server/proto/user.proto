@@ -69,7 +69,58 @@ service UserService{
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc GetMe(GetMeRequest) returns(GetMeResponse);
   rpc Logout(LogoutRequest) returns(LogoutResponse);
+
+  rpc AddAccount(AddAccountRequest) returns(AddAccountResponse);
+  rpc AddText(AddTextRequest) returns(AddTextResponse);
+  rpc AddBinary(AddBinaryRequest) returns(AddBinaryResponse);
+  rpc AddCard(AddCardRequest) returns(AddCardResponse);
+  rpc GetByTitle(GetByTitleRequest) returns(GetByTitleResponse);
+  rpc GetFullList(GetFullListRequest) returns(GetFullListResponse);
+  rpc GetAllTitles(GetAllTitlesRequest) returns(GetAllTitlesResponse);
 }
+
+message AddAccountRequest{
+  string title = 1;
+  string data = 2;
+}
+message AddAccountResponse{}
+
+message AddTextRequest{
+  string title = 1;
+  string data = 2;
+}
+message AddTextResponse{}
+
+message AddBinaryRequest{
+  string title = 1;
+  bytes data = 2;
+}
+message AddBinaryResponse{}
+
+message AddCardRequest{
+  string title = 1;
+  string data = 2;
+}
+message AddCardResponse{}
+
+
+message GetByTitleRequest{
+  string title = 1;
+}
+message GetByTitleResponse{
+  repeated string data = 1;
+}
+
+message GetFullListRequest{}
+message GetFullListResponse{
+  repeated string data = 1;
+}
+
+message GetAllTitlesRequest{};
+message GetAllTitlesResponse{
+  repeated string data = 1;
+}
+
 
 
 

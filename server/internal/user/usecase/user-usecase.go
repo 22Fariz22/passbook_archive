@@ -29,7 +29,7 @@ func NewUserUseCase(logger logger.Logger, userRepo user.UserPGRepository, redisR
 
 // Register new user
 func (u *userUseCase) Register(ctx context.Context, user *entity.User) (*entity.User, error) {
-	existsUser, err := u.userPgRepo.FindByLogin(ctx, user.Login) //исправить на find by login
+	existsUser, err := u.userPgRepo.FindByLogin(ctx, user.Login)
 	if existsUser != nil || err == nil {
 		return nil, grpc_errors.ErrEmailExists
 	}
@@ -85,24 +85,30 @@ func (u *userUseCase) Login(ctx context.Context, login string, password string) 
 	return foundUser, err
 }
 
-// AddAccount add account
-func (u *userUseCase) AddAccount(ctx context.Context, userID uuid.UUID) (*entity.User, error) {
-	cachedUser, err := u.redisRepo.GetByIDCtx(ctx, userID.String())
-	if err != nil && !errors.Is(err, redis.Nil) {
-		u.logger.Errorf("redisRepo.GetByIDCtx", err)
-	}
-	if cachedUser != nil {
-		return cachedUser, nil
-	}
+func (u *userUseCase) AddAccount(ctx context.Context, userID uuid.UUID, tittle string, data string) error {
+	return u.userPgRepo.AddAccount(ctx, userID, tittle, data)
+}
 
-	foundUser, err := u.userPgRepo.FindById(ctx, userID)
-	if err != nil {
-		return nil, errors.Wrap(err, "userPgRepo.FindById")
-	}
+func (u *userUseCase) AddText(ctx context.Context, userID uuid.UUID, tittle string, data string) error {
+	return u.userPgRepo.AddText(ctx, userID, tittle, data)
+}
 
-	if err := u.redisRepo.SetUserCtx(ctx, foundUser.UserID.String(), userByIdCacheDuration, foundUser); err != nil {
-		u.logger.Errorf("redisRepo.SetUserCtx", err)
-	}
+func (u *userUseCase) AddBinary(ctx context.Context, userID uuid.UUID, tittle string, data []byte) error {
+	return u.userPgRepo.AddBinary(ctx, userID, tittle, data)
+}
 
-	return foundUser, nil
+func (u *userUseCase) AddCard(ctx context.Context, userID uuid.UUID, tittle string, data string) error {
+	return u.userPgRepo.AddCard(ctx, userID, tittle, data)
+}
+
+func (u *userUseCase) GetByTitle(ctx context.Context, userID uuid.UUID, title string) ([]string, error) {
+	return u.userPgRepo.GetByTitle(ctx, userID, title)
+}
+
+func (u *userUseCase) GetFullList(ctx context.Context, userID uuid.UUID) ([]string, error) {
+	return u.userPgRepo.GetFullList(ctx, userID)
+}
+
+func (u *userUseCase) GetAllTitles(ctx context.Context, userID uuid.UUID) ([]string, error) {
+	return u.userPgRepo.GetAllTitles(ctx, userID)
 }

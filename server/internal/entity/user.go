@@ -3,14 +3,13 @@ package entity
 import (
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
 // User base model
 type User struct {
 	UserID   uuid.UUID `json:"user_id" db:"user_id" validate:"omitempty"`
 	Login    string    `json:"login" db:"login" validate:"required,lte=30"`
-	Password string    `json:"password,omitempty" db:"password"`
+	Password string    `json:"password" db:"password"`
 }
 
 // Sanitize password
@@ -43,37 +42,30 @@ func (u *User) PrepareCreate() error {
 
 // Account
 type Account struct {
-	ID        string
-	Login     string
-	Password  string
-	CreatedAt time.Time `json:"created_at,omitempty" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at,omitempty" db:"updated_at"`
+	UserID uuid.UUID `json:"user_id" db:"user_id"`
+	Title  string    `json:"title" db:"title" validate:"required,lte=30"`
+	Data   string    `json:"data" db:"data" validate:"omitempty"`
+	//CreatedAt time.Time `json:"created_at" db:"created_at"`
+	//UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
 
 // Text
 type Text struct {
-	ID        string
-	TextData  string
-	CreatedAt time.Time `json:"created_at,omitempty" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at,omitempty" db:"updated_at"`
+	UserID uuid.UUID `json:"user_id" db:"user_id" `
+	Title  string    `json:"title" db:"title" validate:"required,lte=30"`
+	Data   string    `json:"data" db:"data" validate:"omitempty"`
 }
 
 // Binary
 type Binary struct {
-	ID         string
-	BinaryData byte
-	CreatedAt  time.Time `json:"created_at,omitempty" db:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at,omitempty" db:"updated_at"`
+	UserID uuid.UUID `json:"user_id" db:"user_id"`
+	Title  string    `json:"title" db:"title" validate:"required,lte=30"`
+	Data   []byte    `json:"data" db:"data" validate:"omitempty"`
 }
 
 // Card
 type Card struct {
-	ID             string
-	UploadedAt     time.Time
-	CardNumber     string
-	ExpirationData string
-	CardHolderName string
-	CVCCode        string
-	CreatedAt      time.Time `json:"created_at,omitempty" db:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at,omitempty" db:"updated_at"`
+	UserID uuid.UUID `json:"user_id" db:"user_id"`
+	Title  string    `json:"title" db:"title" validate:"required,lte=30"`
+	Data   string    `json:"data" db:"data" validate:"omitempty"`
 }

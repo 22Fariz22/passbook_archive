@@ -5,7 +5,6 @@ import (
 	"github.com/22Fariz22/passbook/server/internal/entity"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
-	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 )
 
@@ -21,9 +20,6 @@ func NewUserPGRepository(db *sqlx.DB) *UserRepository {
 
 // Create new user
 func (r *UserRepository) Create(ctx context.Context, user *entity.User) (*entity.User, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "UserRepository.Create")
-	defer span.Finish()
-
 	createdUser := &entity.User{}
 	if err := r.db.QueryRowxContext(
 		ctx,
@@ -49,13 +45,92 @@ func (r *UserRepository) FindByLogin(ctx context.Context, login string) (*entity
 
 // Find user by uuid
 func (r *UserRepository) FindById(ctx context.Context, userID uuid.UUID) (*entity.User, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "UserRepository.FindById")
-	defer span.Finish()
-
 	user := &entity.User{}
 	if err := r.db.GetContext(ctx, user, findByIDQuery, userID); err != nil {
 		return nil, errors.Wrap(err, "FindById.GetContext")
 	}
 
 	return user, nil
+}
+
+func (r *UserRepository) AddAccount(ctx context.Context, userID uuid.UUID, title string, data string) error {
+	if _, err := r.db.NamedExecContext(ctx,
+		addAccountQuery,
+		map[string]interface{}{
+			"user_id": userID,
+			"title":   title,
+			"data":    data,
+		}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *UserRepository) AddText(ctx context.Context, userID uuid.UUID, title string, data string) error {
+	if _, err := r.db.NamedExecContext(ctx,
+		addTextQuery,
+		map[string]interface{}{
+			"user_id": userID,
+			"title":   title,
+			"data":    data,
+		}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *UserRepository) AddBinary(ctx context.Context, userID uuid.UUID, title string, data []byte) error {
+	if _, err := r.db.NamedExecContext(ctx,
+		addBinaryQuery,
+		map[string]interface{}{
+			"user_id": userID,
+			"title":   title,
+			"data":    data,
+		}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *UserRepository) AddCard(ctx context.Context, userID uuid.UUID, title string, data string) error {
+	if _, err := r.db.NamedExecContext(ctx,
+		addCardQuery,
+		map[string]interface{}{
+			"user_id": userID,
+			"title":   title,
+			"data":    data,
+		}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *UserRepository) GetByTitle(ctx context.Context, userID uuid.UUID, title string) ([]string, error) {
+	var dataRows []string
+
+	if err := r.db.SelectContext(ctx, &dataRows, getByTitleQuery, userID, title); err != nil {
+		return nil, err
+	}
+
+	return dataRows, nil
+}
+
+func (r *UserRepository) GetFullList(ctx context.Context, userID uuid.UUID) ([]string, error) {
+	var dataRows []string
+
+	if err := r.db.SelectContext(ctx, &dataRows, getFullListQuery, userID); err != nil {
+		return nil, err
+	}
+
+	return dataRows, nil
+}
+
+func (r *UserRepository) GetAllTitles(ctx context.Context, userID uuid.UUID) ([]string, error) {
+	var dataRows []string
+
+	if err := r.db.SelectContext(ctx, &dataRows, getAllTitlesQuery, userID); err != nil {
+		return nil, err
+	}
+
+	return dataRows, nil
 }
