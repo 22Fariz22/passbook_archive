@@ -9,3 +9,31 @@ CREATE TABLE users
     login      VARCHAR(32)              NOT NULL CHECK ( login <> '' ),
     password   VARCHAR(250)             NOT NULL CHECK ( octet_length(password) <> 0 )
 );
+
+CREATE TABLE accounts
+(
+    user_id    varchar,
+    title      VARCHAR(32)              NOT NULL,
+    data       VARCHAR(250)             NOT NULL
+);
+
+CREATE TABLE cards
+(
+    user_id    varchar,
+    title      VARCHAR(32)              NOT NULL,
+    data       VARCHAR(250)             NOT NULL
+);
+
+CREATE TABLE binaries
+(
+    user_id    varchar,
+    title      VARCHAR(32)              NOT NULL  ,
+    data       VARCHAR(10000)           NOT NULL
+);
+
+CREATE TABLE texts
+(
+    user_id    varchar,
+    title      VARCHAR(32)              NOT NULL ,
+    data       VARCHAR(1000)             NOT NULL
+);

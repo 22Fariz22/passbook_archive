@@ -43,15 +43,9 @@ run-linter:
 # ==============================================================================
 # Go migrate postgresql
 
-force:
-	migrate -database "postgres://postgres:55555@127.0.0.1:5432/passbook?sslmode=disable" -path migrations force 1
-
-version:
-	migrate -database postgres://postgres:55555@localhost:5432/passbook?sslmode=disable -path migrations version
-
 migrate_up:
-	migrate -database postgres://postgres:55555@localhost:5432/passbook?sslmode=disable -path migrations up 1
+	migrate -path migrations/ -database "postgresql://postgres:55555@localhost:5432/passbook?sslmode=disable" -verbose up
 
 migrate_down:
-	migrate -database postgres://postgres:55555@localhost:5432/passbook?sslmode=disable -path migrations down 1
+	migrate -path migrations/ -database "postgresql://postgres:55555@localhost:5432/passbook?sslmode=disable" -verbose down
 
