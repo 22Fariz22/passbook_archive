@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"github.com/22Fariz22/passbook/server/internal/entity"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -54,10 +55,13 @@ func (r *UserRepository) FindById(ctx context.Context, userID uuid.UUID) (*entit
 }
 
 func (r *UserRepository) AddAccount(ctx context.Context, userID uuid.UUID, title string, data string) error {
+	fmt.Println("userID.String() ", userID.String())
+	fmt.Println("title: ", title)
+	fmt.Println("data:", data)
 	if _, err := r.db.NamedExecContext(ctx,
 		addAccountQuery,
 		map[string]interface{}{
-			"user_id": userID,
+			"user_id": userID.String(),
 			"title":   title,
 			"data":    data,
 		}); err != nil {

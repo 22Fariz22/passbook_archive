@@ -10,6 +10,7 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
+	"log"
 	"time"
 )
 
@@ -31,14 +32,18 @@ func NewSessionRepository(redisClient *redis.Client, cfg *config.Config) session
 
 // Create session in redis
 func (s *sessionRepo) CreateSession(ctx context.Context, sess *entity.Session, expire int) (string, error) {
+	log.Println("CreateSession repo.")
+	log.Println("sess.UserID.", sess.UserID)
 	sess.SessionID = uuid.New().String()
 	sessionKey := s.createKey(sess.SessionID)
+	log.Println("sessionKey:", sessionKey)
 
 	sessBytes, err := json.Marshal(&sess)
 	if err != nil {
 		return "", errors.WithMessage(err, "sessionRepo.CreateSession.json.Marshal")
 	}
 	if err = s.redisClient.Set(ctx, sessionKey, sessBytes, time.Second*time.Duration(expire)).Err(); err != nil {
+		log.Println("err in redis CreateSession.")
 		return "", errors.Wrap(err, "sessionRepo.CreateSession.redisClient.Set")
 	}
 	return sess.SessionID, nil

@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/22Fariz22/passbook/server/config"
+	"google.golang.org/grpc/reflection"
 	"net"
 	"os"
 	"os/signal"
@@ -22,7 +23,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
-	"google.golang.org/grpc/reflection"
 )
 
 // GRPC Auth Server

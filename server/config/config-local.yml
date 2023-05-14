@@ -52,5 +52,4 @@ cookie:
 session:
   Name: session-id
   Prefix: api-session
-  Expire: 3600
-gSpans: false
+  Expire: 360000

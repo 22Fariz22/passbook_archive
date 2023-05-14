@@ -14,9 +14,7 @@ type Config struct {
 	Redis    RedisConfig
 	Cookie   Cookie
 	Session  Session
-	Metrics  Metrics
 	Logger   Logger
-	Jaeger   Jaeger
 }
 
 // Server config struct
@@ -85,19 +83,6 @@ type Session struct {
 	Prefix string
 	Name   string
 	Expire int
-}
-
-// Metrics config
-type Metrics struct {
-	URL         string
-	ServiceName string
-}
-
-// Jaeger
-type Jaeger struct {
-	Host        string
-	ServiceName string
-	LogSpans    bool
 }
 
 // Load config file from given path

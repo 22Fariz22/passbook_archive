@@ -12,6 +12,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"log"
 )
 
 // Register new user
@@ -120,8 +121,8 @@ func (u *usersService) Logout(ctx context.Context, request *userService.LogoutRe
 		u.logger.Errorf("getSessionIDFromCtx: %v", err)
 		return nil, err
 	}
-
 	if err := u.sessUC.DeleteByID(ctx, sessID); err != nil {
+		log.Println("here err u.sessUC.DeleteByID.")
 		u.logger.Errorf("sessUC.DeleteByID: %v", err)
 		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.DeleteByID: %v", err)
 	}
