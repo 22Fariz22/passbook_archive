@@ -12,28 +12,32 @@ CREATE TABLE users
 
 CREATE TABLE accounts
 (
-    user_id    varchar,
+    user_id    VARCHAR,
     title      VARCHAR(32)              NOT NULL,
-    data       VARCHAR(250)             NOT NULL
+    login      VARCHAR(32)             NOT NULL,
+    password   VARCHAR(250)         NOT NULL
 );
 
 CREATE TABLE cards
 (
-    user_id    varchar,
-    title      VARCHAR(32)              NOT NULL,
-    data       VARCHAR(250)             NOT NULL
+    user_id         VARCHAR,
+    title           VARCHAR(32)        NOT NULL,
+    card_number     VARCHAR(32)        NOT NULL,
+    name            VARCHAR(32),
+    date_exp        VARCHAR(6),
+    cvc_code        VARCHAR(6)
 );
 
 CREATE TABLE binaries
 (
-    user_id    varchar,
+    user_id    VARCHAR,
     title      VARCHAR(32)              NOT NULL  ,
     data       VARCHAR(10000)           NOT NULL
 );
 
 CREATE TABLE texts
 (
-    user_id    varchar,
+    user_id    VARCHAR,
     title      VARCHAR(32)              NOT NULL ,
     data       VARCHAR(1000)             NOT NULL
 );
