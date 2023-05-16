@@ -1,6 +1,7 @@
 package passbook
 
 import (
+	"fmt"
 	"github.com/22Fariz22/passbook/cli/pkg"
 	pb "github.com/22Fariz22/passbook/server/proto"
 	"github.com/spf13/cobra"
@@ -9,13 +10,11 @@ import (
 	"log"
 )
 
-var loginReq pb.LoginRequest
-var loginResp pb.LoginResponse
-
-var loginCmd = &cobra.Command{
-	Use:     "login",
-	Aliases: []string{"log"},
-	Short:   "sign-in",
+var logoutCmd = &cobra.Command{
+	Use: "logout",
+	//Aliases: []string{"out"},
+	Short: "out",
+	Long:  "выходим из системы",
 	Run: func(cmd *cobra.Command, args []string) {
 		conn, err := grpc.Dial(":5001", grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
@@ -26,18 +25,15 @@ var loginCmd = &cobra.Command{
 		// через которую будем отправлять сообщения
 		c := pb.NewUserServiceClient(conn)
 
-		pkg.Login(c, &pb.LoginRequest{
-			Login:    login,
-			Password: password,
-		})
+		err = pkg.Logout(c, &pb.LogoutRequest{})
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("you got out")
 	},
 }
 
-var login string
-var password string
-
 func init() {
-	rootCmd.AddCommand(loginCmd)
-	loginCmd.Flags().StringVarP(&login, "login", "l", "", "it is string to reverse")
-	loginCmd.Flags().StringVarP(&password, "password", "p", "", "it is string to reverse")
+	rootCmd.AddCommand(logoutCmd)
+
 }

@@ -1,6 +1,7 @@
 package passbook
 
 import (
+	"fmt"
 	"github.com/22Fariz22/passbook/cli/pkg"
 	pb "github.com/22Fariz22/passbook/server/proto"
 	"github.com/spf13/cobra"
@@ -9,13 +10,13 @@ import (
 	"log"
 )
 
-var loginReq pb.LoginRequest
-var loginResp pb.LoginResponse
+var addTextRequest pb.AddTextRequest
 
-var loginCmd = &cobra.Command{
-	Use:     "login",
-	Aliases: []string{"log"},
-	Short:   "sign-in",
+var addTextCmd = &cobra.Command{
+	Use:     "text",
+	Aliases: []string{"tex"},
+	Short:   "text to save",
+	Long:    "",
 	Run: func(cmd *cobra.Command, args []string) {
 		conn, err := grpc.Dial(":5001", grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
@@ -26,18 +27,19 @@ var loginCmd = &cobra.Command{
 		// через которую будем отправлять сообщения
 		c := pb.NewUserServiceClient(conn)
 
-		pkg.Login(c, &pb.LoginRequest{
-			Login:    login,
-			Password: password,
-		})
-	},
-}
-
-var login string
-var password string
+		err = pkg.AddText(c, &addTextRequest)
+		if err != nil {
+			return
+		}
+		fmt.Println("text added")
+	}}
 
 func init() {
-	rootCmd.AddCommand(loginCmd)
-	loginCmd.Flags().StringVarP(&login, "login", "l", "", "it is string to reverse")
-	loginCmd.Flags().StringVarP(&password, "password", "p", "", "it is string to reverse")
+	rootCmd.AddCommand(addTextCmd)
+	addTextCmd.Flags().StringVarP(&addTextRequest.Title, "title", "t", "", "add title")
+	addTextCmd.Flags().StringVarP(&addTextRequest.Data, "data", "d", "", "add text")
+
+	addAccountCmd.MarkFlagRequired("title")
+	addAccountCmd.MarkFlagRequired("data")
+
 }

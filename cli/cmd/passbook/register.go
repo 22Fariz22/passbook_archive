@@ -14,7 +14,7 @@ var registerReq pb.LoginRequest
 var registerCmd = &cobra.Command{
 	Use:     "register",
 	Aliases: []string{"reg"},
-	Short:   "sign-up",
+	Short:   "reg",
 	Run: func(cmd *cobra.Command, args []string) {
 		conn, err := grpc.Dial(":5001", grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
