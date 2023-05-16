@@ -149,7 +149,9 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 	accounts := []entity.Account{}
 	texts := []entity.Text{}
 	cards := []entity.Card{}
+	binaries := []entity.Binary{}
 
+	//get accounts
 	err := r.db.Select(&accounts, getByTitleAccountsQuery, userID, request.Title)
 	if err != nil {
 		log.Println("err GetByTitle:", err)
@@ -158,6 +160,7 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 		everything = append(everything, "account-> "+"login: "+v.Login+" "+" password: "+v.Password)
 	}
 
+	//get texts
 	err = r.db.Select(&texts, getByTitleTextQuery, userID, request.Title)
 	if err != nil {
 		log.Println("err GetByText:", err)
@@ -166,6 +169,7 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 		everything = append(everything, "Text-> "+v.Data)
 	}
 
+	//get cards
 	err = r.db.Select(&cards, getByTitleCardQuery, userID, request.Title)
 	if err != nil {
 		log.Println("err GetByCard:", err)
@@ -175,7 +179,15 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 			v.Name+" date expiration: "+v.DateExp+" cvc code: "+v.CVCCode)
 	}
 
-	//fmt.Println("ev:", everything)
+	//get binaries
+	err = r.db.Select(&binaries, getByTitleBinaryQuery, userID, request.Title)
+	if err != nil {
+		log.Println("err GetByBinary:", err)
+	}
+	for _, v := range binaries {
+		everything = append(everything, "Binary-> "+string(v.Data))
+	}
+
 	return everything, nil
 }
 
