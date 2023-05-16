@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/22Fariz22/passbook/server/internal/entity"
 	"github.com/22Fariz22/passbook/server/pkg/grpc_errors"
 	"github.com/22Fariz22/passbook/server/pkg/utils"
@@ -146,7 +147,8 @@ func (u *usersService) AddAccount(ctx context.Context, request *userService.AddA
 		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
 	}
 
-	err = u.userUC.AddAccount(ctx, session.UserID, request.GetTitle(), request.GetData())
+	fmt.Println("handler.addAccount: session.SessionID, request: ", session.SessionID, request)
+	err = u.userUC.AddAccount(ctx, session.UserID.String(), request) //request.GetTitle(),request.GetLogin(),request.GetPassword()
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +172,7 @@ func (u *usersService) AddText(ctx context.Context, request *userService.AddText
 		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
 	}
 
-	err = u.userUC.AddText(ctx, session.UserID, request.GetTitle(), request.GetData())
+	err = u.userUC.AddText(ctx, session.UserID.String(), request)
 	if err != nil {
 		return nil, err
 	}
@@ -194,7 +196,7 @@ func (u *usersService) AddBinary(ctx context.Context, request *userService.AddBi
 		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
 	}
 
-	err = u.userUC.AddBinary(ctx, session.UserID, request.GetTitle(), request.GetData())
+	err = u.userUC.AddBinary(ctx, session.UserID.String(), request)
 	if err != nil {
 		return nil, err
 	}
@@ -218,7 +220,7 @@ func (u *usersService) AddCard(ctx context.Context, request *userService.AddCard
 		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
 	}
 
-	err = u.userUC.AddCard(ctx, session.UserID, request.GetTitle(), request.GetData())
+	err = u.userUC.AddCard(ctx, session.UserID.String(), request)
 	if err != nil {
 		return nil, err
 	}
@@ -242,7 +244,7 @@ func (u *usersService) GetByTitle(ctx context.Context, request *userService.GetB
 		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
 	}
 
-	data, err := u.userUC.GetByTitle(ctx, session.UserID, request.GetTitle())
+	data, err := u.userUC.GetByTitle(ctx, session.UserID.String(), request)
 	if err != nil {
 		return nil, err
 	}

@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"github.com/22Fariz22/passbook/server/internal/entity"
+	userService "github.com/22Fariz22/passbook/server/proto"
 	"github.com/google/uuid"
 )
 
@@ -13,11 +14,11 @@ type UserUseCase interface {
 	FindByLogin(ctx context.Context, login string) (*entity.User, error)
 	FindById(ctx context.Context, userID uuid.UUID) (*entity.User, error)
 
-	AddAccount(ctx context.Context, userID uuid.UUID, tittle string, data string) error
-	AddText(ctx context.Context, userID uuid.UUID, tittle string, data string) error
-	AddBinary(ctx context.Context, userID uuid.UUID, tittle string, data []byte) error
-	AddCard(ctx context.Context, userID uuid.UUID, tittle string, data string) error
-	GetByTitle(ctx context.Context, userID uuid.UUID, title string) ([]string, error)
+	AddAccount(ctx context.Context, userID string, request *userService.AddAccountRequest) error //userID uuid.UUID, tittle string, data string) error
+	AddText(ctx context.Context, userID string, request *userService.AddTextRequest) error
+	AddBinary(ctx context.Context, userID string, request *userService.AddBinaryRequest) error
+	AddCard(ctx context.Context, userID string, request *userService.AddCardRequest) error
+	GetByTitle(ctx context.Context, userID string, request *userService.GetByTitleRequest) ([]string, error)
 	GetFullList(ctx context.Context, userID uuid.UUID) ([]string, error)
 	GetAllTitles(ctx context.Context, userID uuid.UUID) ([]string, error)
 }

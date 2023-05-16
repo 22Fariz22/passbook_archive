@@ -42,9 +42,10 @@ func (u *User) PrepareCreate() error {
 
 // Account
 type Account struct {
-	UserID uuid.UUID `json:"user_id" db:"user_id"`
-	Title  string    `json:"title" db:"title" validate:"required,lte=30"`
-	Data   string    `json:"data" db:"data" validate:"omitempty"`
+	UserID   string `json:"user_id" db:"user_id"`
+	Title    string `json:"title" db:"title" validate:"required,lte=30"`
+	Login    string `json:"login" db:"login" validate:"required,lte=30"`
+	Password string `json:"password" db:"password" validate:"required,lte=250"`
 	//CreatedAt time.Time `json:"created_at" db:"created_at"`
 	//UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
@@ -65,7 +66,10 @@ type Binary struct {
 
 // Card
 type Card struct {
-	UserID uuid.UUID `json:"user_id" db:"user_id"`
-	Title  string    `json:"title" db:"title" validate:"required,lte=30"`
-	Data   string    `json:"data" db:"data" validate:"omitempty"`
+	UserID     uuid.UUID `json:"user_id" db:"user_id"`
+	Title      string    `json:"title" db:"title" validate:"required,lte=30"`
+	CardNumber string    `db:"card_number"`
+	Name       string    `db:"name"`
+	DateExp    string    `db:"date_exp"`
+	CVCCode    string    `db:"cvc_code"`
 }

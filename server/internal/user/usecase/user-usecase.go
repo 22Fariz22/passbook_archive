@@ -6,9 +6,11 @@ import (
 	"github.com/22Fariz22/passbook/server/internal/user"
 	"github.com/22Fariz22/passbook/server/pkg/grpc_errors"
 	"github.com/22Fariz22/passbook/server/pkg/logger"
+	userService "github.com/22Fariz22/passbook/server/proto"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
+	"log"
 )
 
 const (
@@ -85,24 +87,25 @@ func (u *userUseCase) Login(ctx context.Context, login string, password string) 
 	return foundUser, err
 }
 
-func (u *userUseCase) AddAccount(ctx context.Context, userID uuid.UUID, tittle string, data string) error {
-	return u.userPgRepo.AddAccount(ctx, userID, tittle, data)
+func (u *userUseCase) AddAccount(ctx context.Context, userID string, request *userService.AddAccountRequest) error {
+	log.Println("uc AddAccount userID", userID)
+	return u.userPgRepo.AddAccount(ctx, userID, request)
 }
 
-func (u *userUseCase) AddText(ctx context.Context, userID uuid.UUID, tittle string, data string) error {
-	return u.userPgRepo.AddText(ctx, userID, tittle, data)
+func (u *userUseCase) AddText(ctx context.Context, userID string, request *userService.AddTextRequest) error {
+	return u.userPgRepo.AddText(ctx, userID, request)
 }
 
-func (u *userUseCase) AddBinary(ctx context.Context, userID uuid.UUID, tittle string, data []byte) error {
-	return u.userPgRepo.AddBinary(ctx, userID, tittle, data)
+func (u *userUseCase) AddBinary(ctx context.Context, userID string, request *userService.AddBinaryRequest) error {
+	return u.userPgRepo.AddBinary(ctx, userID, request)
 }
 
-func (u *userUseCase) AddCard(ctx context.Context, userID uuid.UUID, tittle string, data string) error {
-	return u.userPgRepo.AddCard(ctx, userID, tittle, data)
+func (u *userUseCase) AddCard(ctx context.Context, userID string, request *userService.AddCardRequest) error {
+	return u.userPgRepo.AddCard(ctx, userID, request)
 }
 
-func (u *userUseCase) GetByTitle(ctx context.Context, userID uuid.UUID, title string) ([]string, error) {
-	return u.userPgRepo.GetByTitle(ctx, userID, title)
+func (u *userUseCase) GetByTitle(ctx context.Context, userID string, request *userService.GetByTitleRequest) ([]string, error) {
+	return u.userPgRepo.GetByTitle(ctx, userID, request)
 }
 
 func (u *userUseCase) GetFullList(ctx context.Context, userID uuid.UUID) ([]string, error) {

@@ -9,23 +9,30 @@ const (
 
 	findByIDQuery = `SELECT user_id, login FROM users WHERE user_id = $1`
 
-	addAccountQuery = `INSERT INTO accounts (user_id, title, data)
-		VALUES ($1, $2, $3)`
-
+	addAccountQuery = `INSERT INTO accounts (user_id, title, login, password)
+		VALUES ($1, $2, $3, $4)
+		RETURNING title
+		`
+	//RETURNING user_id, title, login, password
 	addTextQuery = `INSERT INTO texts (user_id, title, data)
 		VALUES ($1, $2, $3)`
 
 	addBinaryQuery = `INSERT INTO binaries (user_id, title, data)
 		VALUES ($1, $2, $3)`
 
-	addCardQuery = `INSERT INTO cards (user_id, title, data)
-		VALUES ($1, $2, $3)`
+	addCardQuery = `INSERT INTO cards (user_id, title, name, card_number, date_exp, cvc_code)
+		VALUES ($1, $2, $3, $4, $5, $6)`
 
-	getByTitleQuery = `SELECT data FROM accounts
+	getByTitleQuery = `SELECT * FROM accounts
 		JOIN texts on accounts.user_id = texts.user_id
 		JOIN binaries on accounts.user_id = binaries.user_id
 		JOIN cards on accounts.user_id = cards.user_id
 		WHERE user_id = $1 and title = $2`
+
+	getByTitleAccountsQuery = `SELECT login,password FROM accounts WHERE user_id= $1 and title = $2`
+	getByTitleTextQuery     = `SELECT data FROM texts WHERE user_id= $1 and title = $2`
+	getByTitleCardQuery     = `SELECT card_number,name,date_exp,cvc_code FROM cards WHERE user_id= $1 and title = $2`
+	getByTitleBinaryQuery   = `SELECT data FROM binaries WHERE user_id= $1 and title = $2`
 
 	getFullListQuery = `SELECT title, data FROM accounts
 		JOIN texts on accounts.user_id = texts.user_id

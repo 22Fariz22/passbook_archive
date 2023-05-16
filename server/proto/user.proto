@@ -81,9 +81,11 @@ service UserService{
 
 message AddAccountRequest{
   string title = 1;
-  string data = 2;
+  string login = 2;
+  string password = 3;
 }
-message AddAccountResponse{}
+message AddAccountResponse{
+}
 
 message AddTextRequest{
   string title = 1;
@@ -99,7 +101,10 @@ message AddBinaryResponse{}
 
 message AddCardRequest{
   string title = 1;
-  string data = 2;
+  string name = 2;
+  string card_number = 3;
+  string date_exp = 4;
+  string cvc_code = 5;
 }
 message AddCardResponse{}
 
