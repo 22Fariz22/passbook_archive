@@ -14,7 +14,7 @@ type UserUseCase interface {
 	FindByLogin(ctx context.Context, login string) (*entity.User, error)
 	FindById(ctx context.Context, userID uuid.UUID) (*entity.User, error)
 
-	AddAccount(ctx context.Context, userID string, request *userService.AddAccountRequest) error //userID uuid.UUID, tittle string, data string) error
+	AddAccount(ctx context.Context, userID string, request *userService.AddAccountRequest) error
 	AddText(ctx context.Context, userID string, request *userService.AddTextRequest) error
 	AddBinary(ctx context.Context, userID string, request *userService.AddBinaryRequest) error
 	AddCard(ctx context.Context, userID string, request *userService.AddCardRequest) error

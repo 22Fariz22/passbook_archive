@@ -12,10 +12,10 @@ CREATE TABLE users
 
 CREATE TABLE accounts
 (
-    user_id    VARCHAR(250) ,
+    user_id    VARCHAR,
     title      VARCHAR(32)              NOT NULL,
-    login      VARCHAR(32)             NOT NULL,
-    password   VARCHAR(250)         NOT NULL
+    login       VARCHAR(32)             NOT NULL,
+    password       VARCHAR(250)         NOT NULL
 );
 
 CREATE TABLE cards
