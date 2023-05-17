@@ -25,6 +25,7 @@ var getFullListCmd = &cobra.Command{
 		c := pb.NewUserServiceClient(conn)
 
 		res, err := pkg.GetFullList(c, &pb.GetFullListRequest{})
+
 		if err != nil {
 			log.Println("can not get full list.")
 			return

@@ -44,6 +44,5 @@ func init() {
 	addCardCmd.MarkFlagRequired("title")
 	addCardCmd.MarkFlagRequired("name")
 	addCardCmd.MarkFlagRequired("card")
-	addCardCmd.MarkFlagRequired("date")
-	addCardCmd.MarkFlagRequired("cvc")
+
 }

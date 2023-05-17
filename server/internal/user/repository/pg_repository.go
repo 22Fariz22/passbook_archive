@@ -2,12 +2,17 @@ package repository
 
 import (
 	"context"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
 	"fmt"
+	"github.com/22Fariz22/passbook/cli/config"
 	"github.com/22Fariz22/passbook/server/internal/entity"
 	userService "github.com/22Fariz22/passbook/server/proto"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
+	"io"
 	"log"
 )
 
@@ -57,7 +62,10 @@ func (r *UserRepository) FindById(ctx context.Context, userID uuid.UUID) (*entit
 }
 
 func (r *UserRepository) AddAccount(ctx context.Context, userID string, request *userService.AddAccountRequest) error {
-	err, _ := r.db.ExecContext(ctx, addAccountQuery, userID, request.GetTitle(), request.GetLogin(), request.GetPassword())
+	encLogin := encrypt(request.Login)
+	encPassword := encrypt(request.Password)
+
+	err, _ := r.db.ExecContext(ctx, addAccountQuery, userID, request.GetTitle(), encLogin, encPassword)
 	if err != nil {
 		log.Println("err repo AddAccount in r.db.ExecContext", err)
 	}
@@ -65,7 +73,9 @@ func (r *UserRepository) AddAccount(ctx context.Context, userID string, request 
 }
 
 func (r *UserRepository) AddText(ctx context.Context, userID string, request *userService.AddTextRequest) error {
-	err, _ := r.db.ExecContext(ctx, addTextQuery, userID, request.GetTitle(), request.GetData())
+	encData := encrypt(request.Data)
+
+	err, _ := r.db.ExecContext(ctx, addTextQuery, userID, request.GetTitle(), encData)
 	if err != nil {
 		log.Println("err repo AddText in r.db.ExecContext", err)
 	}
@@ -82,14 +92,18 @@ func (r *UserRepository) AddBinary(ctx context.Context, userID string, request *
 }
 
 func (r *UserRepository) AddCard(ctx context.Context, userID string, request *userService.AddCardRequest) error {
-	fmt.Println("text repo AddCard")
+	encCardNumber := encrypt(request.CardNumber)
+	encName := encrypt(request.Name)
+	encDateExp := encrypt(request.DateExp)
+	encCVCCode := encrypt(request.CvcCode)
+
 	err, _ := r.db.ExecContext(ctx, addCardQuery,
 		userID,
 		request.Title,
-		request.Name,
-		request.CardNumber,
-		request.DateExp,
-		request.CvcCode)
+		encName,
+		encCardNumber,
+		encDateExp,
+		encCVCCode)
 	if err != nil {
 		log.Println("err repo AddText in r.db.ExecContext", err)
 	}
@@ -110,7 +124,9 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 		log.Println("err GetByTitle:", err)
 	}
 	for _, v := range accounts {
-		everythingByTitle = append(everythingByTitle, "account-> "+"login: "+v.Login+" "+" password: "+v.Password)
+		decrLogin := decrypt(v.Login)
+		decrPassword := decrypt(v.Password)
+		everythingByTitle = append(everythingByTitle, "account-> "+"login: "+decrLogin+" "+" password: "+decrPassword)
 	}
 
 	//get texts
@@ -118,8 +134,10 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 	if err != nil {
 		log.Println("err GetByText:", err)
 	}
+
 	for _, v := range texts {
-		everythingByTitle = append(everythingByTitle, "Text-> "+v.Data)
+		decrData := decrypt(v.Data)
+		everythingByTitle = append(everythingByTitle, "Text-> "+decrData)
 	}
 
 	//get cards
@@ -128,8 +146,13 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 		log.Println("err GetByCard:", err)
 	}
 	for _, v := range cards {
-		everythingByTitle = append(everythingByTitle, "Card-> "+"card number:"+v.CardNumber+" name:"+
-			v.Name+" date expiration:"+v.DateExp+" cvc code:"+v.CVCCode)
+		decrCardNumber := decrypt(v.CardNumber)
+		decrName := decrypt(v.Name)
+		decrDateExp := decrypt(v.DateExp)
+		decrCVCCode := decrypt(v.CVCCode)
+
+		everythingByTitle = append(everythingByTitle, "Card-> "+"card number:"+decrCardNumber+" name:"+
+			decrName+" date expiration:"+decrDateExp+" cvc code:"+decrCVCCode)
 	}
 
 	//get binaries
@@ -158,7 +181,9 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]stri
 		log.Println("err getByFullListAccountsQuery:", err)
 	}
 	for _, v := range accounts {
-		everythingFullList = append(everythingFullList, "account-> "+"title:"+v.Title+" login:"+v.Login+" "+" password:"+v.Password)
+		decrLogin := decrypt(v.Login)
+		decrPassword := decrypt(v.Password)
+		everythingFullList = append(everythingFullList, "account-> "+"title:"+v.Title+" login:"+decrLogin+" "+" password:"+decrPassword)
 	}
 
 	//get texts
@@ -167,7 +192,8 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]stri
 		log.Println("err getByFullListTextQuery:", err)
 	}
 	for _, v := range texts {
-		everythingFullList = append(everythingFullList, "Text-> "+"title:"+v.Title+" data:"+v.Data)
+		decrData := decrypt(v.Data)
+		everythingFullList = append(everythingFullList, "Text-> "+"title:"+v.Title+" data:"+decrData)
 	}
 
 	//get cards
@@ -176,8 +202,12 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]stri
 		log.Println("err getByFullListCardQuery:", err)
 	}
 	for _, v := range cards {
-		everythingFullList = append(everythingFullList, "Card-> "+"title:"+v.Title+" card number:"+v.CardNumber+" name:"+
-			v.Name+" date expiration:"+v.DateExp+" cvc code:"+v.CVCCode)
+		decrCardNumber := decrypt(v.CardNumber)
+		decrName := decrypt(v.Name)
+		decrDateExp := decrypt(v.DateExp)
+		decrCVCCode := decrypt(v.CVCCode)
+		everythingFullList = append(everythingFullList, "Card-> "+"title:"+v.Title+" card number:"+decrCardNumber+" name:"+
+			decrName+" date expiration:"+decrDateExp+" cvc code:"+decrCVCCode)
 	}
 
 	//get binaries
@@ -190,4 +220,59 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]stri
 	}
 
 	return everythingFullList, nil
+}
+
+func encrypt(s string) []byte {
+	text := []byte(s)
+	key := []byte(config.Key)
+
+	// generate a new aes cipher using our 32 byte long key
+	c, err := aes.NewCipher(key)
+	// if there are any errors, handle them
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	gcm, err := cipher.NewGCM(c)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	nonce := make([]byte, gcm.NonceSize())
+
+	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("in repo cm.Seal():", gcm.Seal(nonce, nonce, text, nil))
+
+	return gcm.Seal(nonce, nonce, text, nil)
+}
+
+func decrypt(ciphertext []byte) string {
+	key := []byte(config.Key)
+
+	c, err := aes.NewCipher(key)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	gcm, err := cipher.NewGCM(c)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	nonceSize := gcm.NonceSize()
+	if len(ciphertext) < nonceSize {
+		fmt.Println(err)
+	}
+
+	nonce, ciphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
+	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(string(plaintext))
+
+	return string(plaintext)
 }

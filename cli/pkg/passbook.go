@@ -53,16 +53,12 @@ func Login(c pb.UserServiceClient, input *pb.LoginRequest) error {
 	return nil
 }
 
+// Logout выход из системы
 func Logout(c pb.UserServiceClient, input *pb.LogoutRequest) error {
-	data, err := ioutil.ReadFile("session.txt")
+	ctx, err := GetSessionAndPutInMD()
 	if err != nil {
-		log.Fatal("err in ioutil.ReadFile", err)
-		return nil
+		return err
 	}
-
-	//вставляем наш session_id в metadata
-	md := metadata.New(map[string]string{"session_id": string(data)})
-	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
 	_, err = c.Logout(ctx, &pb.LogoutRequest{})
 	if err != nil {
@@ -73,16 +69,12 @@ func Logout(c pb.UserServiceClient, input *pb.LogoutRequest) error {
 	return nil
 }
 
+// AddAccount вызов rpc AddAccount -> добавить в хранилище сведдения об аккаунте
 func AddAccount(c pb.UserServiceClient, input *pb.AddAccountRequest) error {
-	data, err := ioutil.ReadFile("session.txt")
+	ctx, err := GetSessionAndPutInMD()
 	if err != nil {
-		log.Println("err in ioutil.ReadFile:", err)
 		return err
 	}
-
-	//вставляем наш session_id в metadata
-	md := metadata.New(map[string]string{"session_id": string(data)})
-	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
 	_, err = c.AddAccount(ctx, input)
 	if err != nil {
@@ -93,15 +85,10 @@ func AddAccount(c pb.UserServiceClient, input *pb.AddAccountRequest) error {
 }
 
 func AddText(c pb.UserServiceClient, input *pb.AddTextRequest) error {
-	data, err := ioutil.ReadFile("session.txt")
+	ctx, err := GetSessionAndPutInMD()
 	if err != nil {
-		log.Println("err in ioutil.ReadFile:", err)
 		return err
 	}
-
-	//вставляем наш session_id в metadata
-	md := metadata.New(map[string]string{"session_id": string(data)})
-	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
 	_, err = c.AddText(ctx, input)
 	if err != nil {
@@ -112,15 +99,10 @@ func AddText(c pb.UserServiceClient, input *pb.AddTextRequest) error {
 }
 
 func AddCard(c pb.UserServiceClient, input *pb.AddCardRequest) error {
-	data, err := ioutil.ReadFile("session.txt")
+	ctx, err := GetSessionAndPutInMD()
 	if err != nil {
-		log.Println("err in ioutil.ReadFile:", err)
 		return err
 	}
-
-	//вставляем наш session_id в metadata
-	md := metadata.New(map[string]string{"session_id": string(data)})
-	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
 	_, err = c.AddCard(ctx, input)
 	if err != nil {
@@ -128,4 +110,47 @@ func AddCard(c pb.UserServiceClient, input *pb.AddCardRequest) error {
 	}
 
 	return nil
+}
+
+func GetByTitle(c pb.UserServiceClient, input *pb.GetByTitleRequest) (*pb.GetByTitleResponse, error) {
+	ctx, err := GetSessionAndPutInMD()
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := c.GetByTitle(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func GetFullList(c pb.UserServiceClient, input *pb.GetFullListRequest) (*pb.GetFullListResponse, error) {
+	ctx, err := GetSessionAndPutInMD()
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := c.GetFullList(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+// GetSessionAndPutInMD читает файл session_id, ищет сессию ,вставляет session_id в метаданные и возвращает context
+func GetSessionAndPutInMD() (context.Context, error) {
+	data, err := ioutil.ReadFile("session.txt")
+	if err != nil {
+		log.Println("err in ioutil.ReadFile:", err)
+		return nil, err
+	}
+
+	//вставляем наш session_id в metadata
+	md := metadata.New(map[string]string{"session_id": string(data)})
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
+
+	return ctx, nil
 }
