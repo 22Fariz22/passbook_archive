@@ -14,30 +14,30 @@ CREATE TABLE accounts
 (
     user_id    VARCHAR,
     title      VARCHAR(32)              NOT NULL,
-    login       VARCHAR(32)             NOT NULL,
-    password       VARCHAR(250)         NOT NULL
+    login      bytea             NOT NULL,
+    password       bytea         NOT NULL
 );
 
 CREATE TABLE cards
 (
     user_id         VARCHAR,
     title           VARCHAR(32)        NOT NULL,
-    card_number     VARCHAR(32)        NOT NULL,
-    name            VARCHAR(32),
-    date_exp        VARCHAR(6),
-    cvc_code        VARCHAR(6)
+    card_number     bytea       NOT NULL,
+    name           bytea,
+    date_exp        bytea,
+    cvc_code       bytea
 );
 
 CREATE TABLE binaries
 (
     user_id    VARCHAR,
     title      VARCHAR(32)              NOT NULL  ,
-    data       VARCHAR(10000)           NOT NULL
+    data       bytea           NOT NULL
 );
 
 CREATE TABLE texts
 (
     user_id    VARCHAR,
     title      VARCHAR(32)              NOT NULL ,
-    data       VARCHAR(1000)             NOT NULL
+    data       bytea             NOT NULL
 );

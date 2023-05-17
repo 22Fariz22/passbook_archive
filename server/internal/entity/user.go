@@ -44,8 +44,8 @@ func (u *User) PrepareCreate() error {
 type Account struct {
 	UserID   string `json:"user_id" db:"user_id"`
 	Title    string `json:"title" db:"title" validate:"required,lte=30"`
-	Login    string `json:"login" db:"login" validate:"required,lte=30"`
-	Password string `json:"password" db:"password" validate:"required,lte=250"`
+	Login    []byte `json:"login" db:"login" validate:"required,lte=30"`
+	Password []byte `json:"password" db:"password" validate:"required,lte=250"`
 	//CreatedAt time.Time `json:"created_at" db:"created_at"`
 	//UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
@@ -54,7 +54,7 @@ type Account struct {
 type Text struct {
 	UserID uuid.UUID `json:"user_id" db:"user_id" `
 	Title  string    `json:"title" db:"title" validate:"required,lte=30"`
-	Data   string    `json:"data" db:"data" validate:"omitempty"`
+	Data   []byte    `json:"data" db:"data" validate:"omitempty"`
 }
 
 // Binary
@@ -68,8 +68,8 @@ type Binary struct {
 type Card struct {
 	UserID     uuid.UUID `json:"user_id" db:"user_id"`
 	Title      string    `json:"title" db:"title" validate:"required,lte=30"`
-	CardNumber string    `db:"card_number"`
-	Name       string    `db:"name"`
-	DateExp    string    `db:"date_exp"`
-	CVCCode    string    `db:"cvc_code"`
+	CardNumber []byte    `db:"card_number"`
+	Name       []byte    `db:"name"`
+	DateExp    []byte    `db:"date_exp"`
+	CVCCode    []byte    `db:"cvc_code"`
 }
