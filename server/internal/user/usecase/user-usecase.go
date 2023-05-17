@@ -111,7 +111,3 @@ func (u *userUseCase) GetByTitle(ctx context.Context, userID string, request *us
 func (u *userUseCase) GetFullList(ctx context.Context, userID uuid.UUID) ([]string, error) {
 	return u.userPgRepo.GetFullList(ctx, userID)
 }
-
-func (u *userUseCase) GetAllTitles(ctx context.Context, userID uuid.UUID) ([]string, error) {
-	return u.userPgRepo.GetAllTitles(ctx, userID)
-}

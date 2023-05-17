@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/22Fariz22/passbook/server/internal/entity"
 	"github.com/22Fariz22/passbook/server/pkg/grpc_errors"
 	"github.com/22Fariz22/passbook/server/pkg/utils"
@@ -132,22 +131,11 @@ func (u *usersService) Logout(ctx context.Context, request *userService.LogoutRe
 }
 
 func (u *usersService) AddAccount(ctx context.Context, request *userService.AddAccountRequest) (*userService.AddAccountResponse, error) {
-	sessID, err := u.getSessionIDFromCtx(ctx)
+	session, err := checkSessionAndGetUserID(u, ctx)
 	if err != nil {
-		u.logger.Errorf("getSessionIDFromCtx: %v", err)
 		return nil, err
 	}
 
-	session, err := u.sessUC.GetSessionByID(ctx, sessID)
-	if err != nil {
-		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
-		if errors.Is(err, redis.Nil) {
-			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
-		}
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
-	}
-
-	fmt.Println("handler.addAccount: session.SessionID, request: ", session.SessionID, request)
 	err = u.userUC.AddAccount(ctx, session.UserID.String(), request) //request.GetTitle(),request.GetLogin(),request.GetPassword()
 	if err != nil {
 		return nil, err
@@ -157,19 +145,9 @@ func (u *usersService) AddAccount(ctx context.Context, request *userService.AddA
 }
 
 func (u *usersService) AddText(ctx context.Context, request *userService.AddTextRequest) (*userService.AddTextResponse, error) {
-	sessID, err := u.getSessionIDFromCtx(ctx)
+	session, err := checkSessionAndGetUserID(u, ctx)
 	if err != nil {
-		u.logger.Errorf("getSessionIDFromCtx: %v", err)
 		return nil, err
-	}
-
-	session, err := u.sessUC.GetSessionByID(ctx, sessID)
-	if err != nil {
-		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
-		if errors.Is(err, redis.Nil) {
-			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
-		}
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
 	}
 
 	err = u.userUC.AddText(ctx, session.UserID.String(), request)
@@ -181,19 +159,9 @@ func (u *usersService) AddText(ctx context.Context, request *userService.AddText
 }
 
 func (u *usersService) AddBinary(ctx context.Context, request *userService.AddBinaryRequest) (*userService.AddBinaryResponse, error) {
-	sessID, err := u.getSessionIDFromCtx(ctx)
+	session, err := checkSessionAndGetUserID(u, ctx)
 	if err != nil {
-		u.logger.Errorf("getSessionIDFromCtx: %v", err)
 		return nil, err
-	}
-
-	session, err := u.sessUC.GetSessionByID(ctx, sessID)
-	if err != nil {
-		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
-		if errors.Is(err, redis.Nil) {
-			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
-		}
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
 	}
 
 	err = u.userUC.AddBinary(ctx, session.UserID.String(), request)
@@ -205,19 +173,9 @@ func (u *usersService) AddBinary(ctx context.Context, request *userService.AddBi
 }
 
 func (u *usersService) AddCard(ctx context.Context, request *userService.AddCardRequest) (*userService.AddCardResponse, error) {
-	sessID, err := u.getSessionIDFromCtx(ctx)
+	session, err := checkSessionAndGetUserID(u, ctx)
 	if err != nil {
-		u.logger.Errorf("getSessionIDFromCtx: %v", err)
 		return nil, err
-	}
-
-	session, err := u.sessUC.GetSessionByID(ctx, sessID)
-	if err != nil {
-		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
-		if errors.Is(err, redis.Nil) {
-			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
-		}
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
 	}
 
 	err = u.userUC.AddCard(ctx, session.UserID.String(), request)
@@ -229,19 +187,9 @@ func (u *usersService) AddCard(ctx context.Context, request *userService.AddCard
 }
 
 func (u *usersService) GetByTitle(ctx context.Context, request *userService.GetByTitleRequest) (*userService.GetByTitleResponse, error) {
-	sessID, err := u.getSessionIDFromCtx(ctx)
+	session, err := checkSessionAndGetUserID(u, ctx)
 	if err != nil {
-		u.logger.Errorf("getSessionIDFromCtx: %v", err)
 		return nil, err
-	}
-
-	session, err := u.sessUC.GetSessionByID(ctx, sessID)
-	if err != nil {
-		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
-		if errors.Is(err, redis.Nil) {
-			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
-		}
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
 	}
 
 	data, err := u.userUC.GetByTitle(ctx, session.UserID.String(), request)
@@ -253,19 +201,9 @@ func (u *usersService) GetByTitle(ctx context.Context, request *userService.GetB
 }
 
 func (u *usersService) GetFullList(ctx context.Context, request *userService.GetFullListRequest) (*userService.GetFullListResponse, error) {
-	sessID, err := u.getSessionIDFromCtx(ctx)
+	session, err := checkSessionAndGetUserID(u, ctx)
 	if err != nil {
-		u.logger.Errorf("getSessionIDFromCtx: %v", err)
 		return nil, err
-	}
-
-	session, err := u.sessUC.GetSessionByID(ctx, sessID)
-	if err != nil {
-		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
-		if errors.Is(err, redis.Nil) {
-			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
-		}
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
 	}
 
 	data, err := u.userUC.GetFullList(ctx, session.UserID)
@@ -274,30 +212,6 @@ func (u *usersService) GetFullList(ctx context.Context, request *userService.Get
 	}
 
 	return &userService.GetFullListResponse{Data: data}, nil
-}
-
-func (u *usersService) GetAllTitles(ctx context.Context, request *userService.GetAllTitlesRequest) (*userService.GetAllTitlesResponse, error) {
-	sessID, err := u.getSessionIDFromCtx(ctx)
-	if err != nil {
-		u.logger.Errorf("getSessionIDFromCtx: %v", err)
-		return nil, err
-	}
-
-	session, err := u.sessUC.GetSessionByID(ctx, sessID)
-	if err != nil {
-		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
-		if errors.Is(err, redis.Nil) {
-			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
-		}
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
-	}
-
-	data, err := u.userUC.GetAllTitles(ctx, session.UserID)
-	if err != nil {
-		return nil, err
-	}
-
-	return &userService.GetAllTitlesResponse{Data: data}, nil
 }
 
 func (u *usersService) registerReqToUserModel(r *userService.RegisterRequest) (*entity.User, error) {
@@ -334,4 +248,22 @@ func (u *usersService) getSessionIDFromCtx(ctx context.Context) (string, error) 
 	}
 
 	return sessionID[0], nil
+}
+
+func checkSessionAndGetUserID(u *usersService, ctx context.Context) (*entity.Session, error) {
+	sessID, err := u.getSessionIDFromCtx(ctx)
+	if err != nil {
+		u.logger.Errorf("getSessionIDFromCtx: %v", err)
+		return nil, err
+	}
+
+	session, err := u.sessUC.GetSessionByID(ctx, sessID)
+	if err != nil {
+		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
+		if errors.Is(err, redis.Nil) {
+			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
+		}
+		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
+	}
+	return session, nil
 }

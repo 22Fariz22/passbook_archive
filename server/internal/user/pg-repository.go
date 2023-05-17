@@ -19,5 +19,4 @@ type UserPGRepository interface {
 	AddCard(ctx context.Context, userID string, request *userService.AddCardRequest) error
 	GetByTitle(ctx context.Context, userID string, request *userService.GetByTitleRequest) ([]string, error)
 	GetFullList(ctx context.Context, userID uuid.UUID) ([]string, error)
-	GetAllTitles(ctx context.Context, userID uuid.UUID) ([]string, error)
 }

@@ -56,62 +56,15 @@ func (r *UserRepository) FindById(ctx context.Context, userID uuid.UUID) (*entit
 	return user, nil
 }
 
-func (r *UserRepository) AddAccount(ctx context.Context, userID string, request *userService.AddAccountRequest) error { //userID uuid.UUID, title string, data string) error {
-	log.Println("repo AddAccount.")
-	log.Println("repo request:", request)
-
-	//не работает
-	//acc := &entity.Account{
-	//	UserID:   userID,
-	//	Title:    request.Title,
-	//	Login:    request.Login,
-	//	Password: request.Password,
-	//}
-	//_, err := r.db.NamedExecContext(ctx, addAccountQuery, acc)
-	//if err != nil {
-	//	log.Println("err repo AddAccount in r.db.ExecContext", err)
-	//}
-
-	//работает
+func (r *UserRepository) AddAccount(ctx context.Context, userID string, request *userService.AddAccountRequest) error {
 	err, _ := r.db.ExecContext(ctx, addAccountQuery, userID, request.GetTitle(), request.GetLogin(), request.GetPassword())
 	if err != nil {
 		log.Println("err repo AddAccount in r.db.ExecContext", err)
 	}
-
-	////работатет
-	//type TitleReturning struct {
-	//	TitleReturning string `json:"title" db:"title"`
-	//}
-	//
-	//acc := &TitleReturning{}
-	//if err := r.db.QueryRowxContext(
-	//	ctx,
-	//	addAccountQuery,
-	//	userID,
-	//	request.Title,
-	//	request.Login,
-	//	request.Password,
-	//).StructScan(acc); err != nil {
-	//	return errors.Wrap(err, "Create.QueryRowxContext")
-	//}
-
-	//if _, err := r.db.NamedExecContext(ctx,
-	//	addAccountQuery,
-	//	map[string]interface{}{
-	//		"user_id":  userID,
-	//		"title":    request.Title,
-	//		"login":    request.Login,
-	//		"password": request.Password,
-	//	}); err != nil {
-	//	log.Println("err repo AddAccount in r.db.NamedExecContext", err)
-	//	return err
-	//}
-
 	return nil
 }
 
 func (r *UserRepository) AddText(ctx context.Context, userID string, request *userService.AddTextRequest) error {
-	fmt.Println("text repo AddText")
 	err, _ := r.db.ExecContext(ctx, addTextQuery, userID, request.GetTitle(), request.GetData())
 	if err != nil {
 		log.Println("err repo AddText in r.db.ExecContext", err)
@@ -195,16 +148,6 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID uuid.UUID) ([]s
 	var dataRows []string
 
 	if err := r.db.SelectContext(ctx, &dataRows, getFullListQuery, userID); err != nil {
-		return nil, err
-	}
-
-	return dataRows, nil
-}
-
-func (r *UserRepository) GetAllTitles(ctx context.Context, userID uuid.UUID) ([]string, error) {
-	var dataRows []string
-
-	if err := r.db.SelectContext(ctx, &dataRows, getAllTitlesQuery, userID); err != nil {
 		return nil, err
 	}
 
