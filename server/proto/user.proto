@@ -76,7 +76,6 @@ service UserService{
   rpc AddCard(AddCardRequest) returns(AddCardResponse);
   rpc GetByTitle(GetByTitleRequest) returns(GetByTitleResponse);
   rpc GetFullList(GetFullListRequest) returns(GetFullListResponse);
-  rpc GetAllTitles(GetAllTitlesRequest) returns(GetAllTitlesResponse);
 }
 
 message AddAccountRequest{

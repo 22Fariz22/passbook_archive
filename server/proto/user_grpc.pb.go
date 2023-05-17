@@ -21,19 +21,18 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	UserService_Register_FullMethodName     = "/passbook.UserService/Register"
-	UserService_FindByLogin_FullMethodName  = "/passbook.UserService/FindByLogin"
-	UserService_FindByID_FullMethodName     = "/passbook.UserService/FindByID"
-	UserService_Login_FullMethodName        = "/passbook.UserService/Login"
-	UserService_GetMe_FullMethodName        = "/passbook.UserService/GetMe"
-	UserService_Logout_FullMethodName       = "/passbook.UserService/Logout"
-	UserService_AddAccount_FullMethodName   = "/passbook.UserService/AddAccount"
-	UserService_AddText_FullMethodName      = "/passbook.UserService/AddText"
-	UserService_AddBinary_FullMethodName    = "/passbook.UserService/AddBinary"
-	UserService_AddCard_FullMethodName      = "/passbook.UserService/AddCard"
-	UserService_GetByTitle_FullMethodName   = "/passbook.UserService/GetByTitle"
-	UserService_GetFullList_FullMethodName  = "/passbook.UserService/GetFullList"
-	UserService_GetAllTitles_FullMethodName = "/passbook.UserService/GetAllTitles"
+	UserService_Register_FullMethodName    = "/passbook.UserService/Register"
+	UserService_FindByLogin_FullMethodName = "/passbook.UserService/FindByLogin"
+	UserService_FindByID_FullMethodName    = "/passbook.UserService/FindByID"
+	UserService_Login_FullMethodName       = "/passbook.UserService/Login"
+	UserService_GetMe_FullMethodName       = "/passbook.UserService/GetMe"
+	UserService_Logout_FullMethodName      = "/passbook.UserService/Logout"
+	UserService_AddAccount_FullMethodName  = "/passbook.UserService/AddAccount"
+	UserService_AddText_FullMethodName     = "/passbook.UserService/AddText"
+	UserService_AddBinary_FullMethodName   = "/passbook.UserService/AddBinary"
+	UserService_AddCard_FullMethodName     = "/passbook.UserService/AddCard"
+	UserService_GetByTitle_FullMethodName  = "/passbook.UserService/GetByTitle"
+	UserService_GetFullList_FullMethodName = "/passbook.UserService/GetFullList"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -52,7 +51,6 @@ type UserServiceClient interface {
 	AddCard(ctx context.Context, in *AddCardRequest, opts ...grpc.CallOption) (*AddCardResponse, error)
 	GetByTitle(ctx context.Context, in *GetByTitleRequest, opts ...grpc.CallOption) (*GetByTitleResponse, error)
 	GetFullList(ctx context.Context, in *GetFullListRequest, opts ...grpc.CallOption) (*GetFullListResponse, error)
-	GetAllTitles(ctx context.Context, in *GetAllTitlesRequest, opts ...grpc.CallOption) (*GetAllTitlesResponse, error)
 }
 
 type userServiceClient struct {
@@ -171,15 +169,6 @@ func (c *userServiceClient) GetFullList(ctx context.Context, in *GetFullListRequ
 	return out, nil
 }
 
-func (c *userServiceClient) GetAllTitles(ctx context.Context, in *GetAllTitlesRequest, opts ...grpc.CallOption) (*GetAllTitlesResponse, error) {
-	out := new(GetAllTitlesResponse)
-	err := c.cc.Invoke(ctx, UserService_GetAllTitles_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -196,7 +185,6 @@ type UserServiceServer interface {
 	AddCard(context.Context, *AddCardRequest) (*AddCardResponse, error)
 	GetByTitle(context.Context, *GetByTitleRequest) (*GetByTitleResponse, error)
 	GetFullList(context.Context, *GetFullListRequest) (*GetFullListResponse, error)
-	GetAllTitles(context.Context, *GetAllTitlesRequest) (*GetAllTitlesResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -239,9 +227,6 @@ func (UnimplementedUserServiceServer) GetByTitle(context.Context, *GetByTitleReq
 }
 func (UnimplementedUserServiceServer) GetFullList(context.Context, *GetFullListRequest) (*GetFullListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFullList not implemented")
-}
-func (UnimplementedUserServiceServer) GetAllTitles(context.Context, *GetAllTitlesRequest) (*GetAllTitlesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllTitles not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -472,24 +457,6 @@ func _UserService_GetFullList_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_GetAllTitles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAllTitlesRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServiceServer).GetAllTitles(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: UserService_GetAllTitles_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).GetAllTitles(ctx, req.(*GetAllTitlesRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -544,10 +511,6 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetFullList",
 			Handler:    _UserService_GetFullList_Handler,
-		},
-		{
-			MethodName: "GetAllTitles",
-			Handler:    _UserService_GetAllTitles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

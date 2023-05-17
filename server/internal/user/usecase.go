@@ -19,5 +19,5 @@ type UserUseCase interface {
 	AddBinary(ctx context.Context, userID string, request *userService.AddBinaryRequest) error
 	AddCard(ctx context.Context, userID string, request *userService.AddCardRequest) error
 	GetByTitle(ctx context.Context, userID string, request *userService.GetByTitleRequest) ([]string, error)
-	GetFullList(ctx context.Context, userID uuid.UUID) ([]string, error)
+	GetFullList(ctx context.Context, userID string) ([]string, error)
 }

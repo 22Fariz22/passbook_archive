@@ -34,15 +34,8 @@ const (
 	getByTitleCardQuery     = `SELECT card_number,name,date_exp,cvc_code FROM cards WHERE user_id= $1 and title = $2`
 	getByTitleBinaryQuery   = `SELECT data FROM binaries WHERE user_id= $1 and title = $2`
 
-	getFullListQuery = `SELECT title, data FROM accounts
-		JOIN texts on accounts.user_id = texts.user_id
-		JOIN binaries on accounts.user_id = binaries.user_id
-		JOIN cards on accounts.user_id = cards.user_id
-		WHERE user_id = $1`
-
-	getAllTitlesQuery = `SELECT title FROM accounts
-		JOIN texts on accounts.user_id = texts.user_id
-		JOIN binaries on accounts.user_id = binaries.user_id
-		JOIN cards on accounts.user_id = cards.user_id
-		WHERE user_id = $1`
+	getByFullListAccountsQuery = `SELECT title,login,password FROM accounts WHERE user_id= $1`
+	getByFullListTextQuery     = `SELECT title,data FROM texts WHERE user_id= $1`
+	getByFullListCardQuery     = `SELECT title,card_number,name,date_exp,cvc_code FROM cards WHERE user_id= $1`
+	getByFullListBinaryQuery   = `SELECT title,data FROM binaries WHERE user_id= $1`
 )

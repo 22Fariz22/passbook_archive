@@ -108,6 +108,6 @@ func (u *userUseCase) GetByTitle(ctx context.Context, userID string, request *us
 	return u.userPgRepo.GetByTitle(ctx, userID, request)
 }
 
-func (u *userUseCase) GetFullList(ctx context.Context, userID uuid.UUID) ([]string, error) {
+func (u *userUseCase) GetFullList(ctx context.Context, userID string) ([]string, error) {
 	return u.userPgRepo.GetFullList(ctx, userID)
 }

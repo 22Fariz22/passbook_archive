@@ -206,7 +206,7 @@ func (u *usersService) GetFullList(ctx context.Context, request *userService.Get
 		return nil, err
 	}
 
-	data, err := u.userUC.GetFullList(ctx, session.UserID)
+	data, err := u.userUC.GetFullList(ctx, session.UserID.String())
 	if err != nil {
 		return nil, err
 	}
