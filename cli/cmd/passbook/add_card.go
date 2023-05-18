@@ -1,7 +1,6 @@
 package passbook
 
 import (
-	"fmt"
 	"github.com/22Fariz22/passbook/cli/pkg"
 	pb "github.com/22Fariz22/passbook/server/proto"
 	"github.com/spf13/cobra"
@@ -30,7 +29,6 @@ var addCardCmd = &cobra.Command{
 		if err != nil {
 			return
 		}
-		fmt.Println("card added")
 	}}
 
 func init() {
