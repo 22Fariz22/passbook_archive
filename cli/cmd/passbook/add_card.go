@@ -42,5 +42,4 @@ func init() {
 	addCardCmd.MarkFlagRequired("title")
 	addCardCmd.MarkFlagRequired("name")
 	addCardCmd.MarkFlagRequired("card")
-
 }
