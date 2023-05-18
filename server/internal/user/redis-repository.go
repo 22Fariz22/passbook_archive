@@ -1,8 +1,9 @@
-//go:generate mockgen -source redis_repository.go -destination mock/redis_repository.go -package mock
+//go:generate mockgen -source redis-repository.go -destination mock/redis_repository.go -package mock
 package user
 
 import (
 	"context"
+
 	"github.com/22Fariz22/passbook/server/internal/entity"
 )
 

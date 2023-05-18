@@ -1,8 +1,9 @@
-//go:generate mockgen -source pg_repository.go -destination mock/pg_repository.go -package mock
+//go:generate mockgen -source pg-repository.go -destination mock/pg_repository.go -package mock
 package user
 
 import (
 	"context"
+
 	"github.com/22Fariz22/passbook/server/internal/entity"
 	userService "github.com/22Fariz22/passbook/server/proto"
 	"github.com/google/uuid"
