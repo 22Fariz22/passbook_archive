@@ -1,4 +1,5 @@
-package_name="ERCCalculatorBot"
+#!/bin/bash
+package_name="passbook"
 package="main.go"
 build_directory="bin/"
 

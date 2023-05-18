@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	pb "github.com/22Fariz22/passbook/server/proto"
 	"google.golang.org/grpc/metadata"
@@ -40,13 +41,14 @@ func Login(c pb.UserServiceClient, input *pb.LoginRequest) error {
 		log.Println(err)
 		return err
 	}
-	l, err := f.WriteString(resp.SessionId)
+	_, err = f.WriteString(resp.SessionId)
 	if err != nil {
+		err = errors.New("возможно вы еще не зарегистрировались")
 		log.Println(err)
 		return err
 	}
 
-	fmt.Println(l, "login successfully")
+	fmt.Println("login successfully")
 
 	return nil
 }

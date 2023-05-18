@@ -7,6 +7,9 @@ run:
 build:
 	go build ./cmd/passbook/main.go
 
+redis:
+	redis-server
+
 test:
 	go test -cover ./...
 
