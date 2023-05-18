@@ -5,23 +5,23 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-	"fmt"
+	"io"
+	"log"
+
 	"github.com/22Fariz22/passbook/cli/config"
 	"github.com/22Fariz22/passbook/server/internal/entity"
 	userService "github.com/22Fariz22/passbook/server/proto"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
-	"io"
-	"log"
 )
 
-// User repository
+// UserRepository User repository
 type UserRepository struct {
 	db *sqlx.DB
 }
 
-// User repository constructor
+// NewUserPGRepository User repository constructor
 func NewUserPGRepository(db *sqlx.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
@@ -41,7 +41,7 @@ func (r *UserRepository) Create(ctx context.Context, user *entity.User) (*entity
 	return createdUser, nil
 }
 
-// Find by user email address
+// FindByLogin Find by user email address
 func (r *UserRepository) FindByLogin(ctx context.Context, login string) (*entity.User, error) {
 	user := &entity.User{}
 	if err := r.db.GetContext(ctx, user, findByLoginQuery, login); err != nil {
@@ -51,7 +51,7 @@ func (r *UserRepository) FindByLogin(ctx context.Context, login string) (*entity
 	return user, nil
 }
 
-// Find user by uuid
+// FindById Find user by uuid
 func (r *UserRepository) FindById(ctx context.Context, userID uuid.UUID) (*entity.User, error) {
 	user := &entity.User{}
 	if err := r.db.GetContext(ctx, user, findByIDQuery, userID); err != nil {
@@ -61,6 +61,7 @@ func (r *UserRepository) FindById(ctx context.Context, userID uuid.UUID) (*entit
 	return user, nil
 }
 
+// AddAccount Add  account data
 func (r *UserRepository) AddAccount(ctx context.Context, userID string, request *userService.AddAccountRequest) error {
 	encLogin := encrypt(request.Login)
 	encPassword := encrypt(request.Password)
@@ -72,6 +73,7 @@ func (r *UserRepository) AddAccount(ctx context.Context, userID string, request 
 	return nil
 }
 
+// AddText add text data
 func (r *UserRepository) AddText(ctx context.Context, userID string, request *userService.AddTextRequest) error {
 	encData := encrypt(request.Data)
 
@@ -82,8 +84,8 @@ func (r *UserRepository) AddText(ctx context.Context, userID string, request *us
 	return nil
 }
 
+// AddBinary add binary data
 func (r *UserRepository) AddBinary(ctx context.Context, userID string, request *userService.AddBinaryRequest) error {
-	fmt.Println("text repo AddBinary")
 	err, _ := r.db.ExecContext(ctx, addTextQuery, userID, request.Title, request.Data)
 	if err != nil {
 		log.Println("err repo AddBinary in r.db.ExecContext", err)
@@ -91,6 +93,7 @@ func (r *UserRepository) AddBinary(ctx context.Context, userID string, request *
 	return nil
 }
 
+// AddCard add card data
 func (r *UserRepository) AddCard(ctx context.Context, userID string, request *userService.AddCardRequest) error {
 	encCardNumber := encrypt(request.CardNumber)
 	encName := encrypt(request.Name)
@@ -110,7 +113,10 @@ func (r *UserRepository) AddCard(ctx context.Context, userID string, request *us
 	return nil
 }
 
+// GetByTitle find data by title
 func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request *userService.GetByTitleRequest) ([]string, error) {
+
+	//here all data from db
 	var everythingByTitle []string
 
 	accounts := []entity.Account{}
@@ -167,7 +173,9 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 	return everythingByTitle, nil
 }
 
+// GetFullList find all type of data
 func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]string, error) {
+	//here all data
 	var everythingFullList []string
 
 	accounts := []entity.Account{}
@@ -222,6 +230,7 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]stri
 	return everythingFullList, nil
 }
 
+// encrypt data
 func encrypt(s string) []byte {
 	text := []byte(s)
 	key := []byte(config.Key)
@@ -230,49 +239,47 @@ func encrypt(s string) []byte {
 	c, err := aes.NewCipher(key)
 	// if there are any errors, handle them
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	gcm, err := cipher.NewGCM(c)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	nonce := make([]byte, gcm.NonceSize())
 
 	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
-
-	fmt.Println("in repo cm.Seal():", gcm.Seal(nonce, nonce, text, nil))
 
 	return gcm.Seal(nonce, nonce, text, nil)
 }
 
+// decrypt data
 func decrypt(ciphertext []byte) string {
 	key := []byte(config.Key)
 
 	c, err := aes.NewCipher(key)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	gcm, err := cipher.NewGCM(c)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	nonceSize := gcm.NonceSize()
 	if len(ciphertext) < nonceSize {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	nonce, ciphertext := ciphertext[:nonceSize], ciphertext[nonceSize:]
 	plaintext, err := gcm.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
-	fmt.Println(string(plaintext))
 
 	return string(plaintext)
 }

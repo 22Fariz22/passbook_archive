@@ -15,6 +15,7 @@ type Acc struct {
 	Data  string
 }
 
+// Register new user
 func Register(c pb.UserServiceClient, input *pb.RegisterRequest) error {
 	_, err := c.Register(context.Background(), input)
 	if err != nil {
@@ -25,6 +26,7 @@ func Register(c pb.UserServiceClient, input *pb.RegisterRequest) error {
 	return nil
 }
 
+// Login user with email and password
 func Login(c pb.UserServiceClient, input *pb.LoginRequest) error {
 	resp, err := c.Login(context.Background(), input)
 	if err != nil {
@@ -35,20 +37,16 @@ func Login(c pb.UserServiceClient, input *pb.LoginRequest) error {
 	//пишем в файл session_id
 	f, err := os.Create("session.txt")
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return err
 	}
 	l, err := f.WriteString(resp.SessionId)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return err
 	}
 
-	fmt.Println(l, "bytes written successfully")
-	//if err != nil {
-	//	fmt.Println(err)
-	//	return err
-	//}
+	fmt.Println(l, "login successfully")
 
 	return nil
 }
@@ -84,6 +82,7 @@ func AddAccount(c pb.UserServiceClient, input *pb.AddAccountRequest) error {
 	return nil
 }
 
+// AddText add text data
 func AddText(c pb.UserServiceClient, input *pb.AddTextRequest) error {
 	ctx, err := GetSessionAndPutInMD()
 	if err != nil {
@@ -98,6 +97,7 @@ func AddText(c pb.UserServiceClient, input *pb.AddTextRequest) error {
 	return nil
 }
 
+// AddCard add card data
 func AddCard(c pb.UserServiceClient, input *pb.AddCardRequest) error {
 	ctx, err := GetSessionAndPutInMD()
 	if err != nil {
@@ -112,6 +112,7 @@ func AddCard(c pb.UserServiceClient, input *pb.AddCardRequest) error {
 	return nil
 }
 
+// GetByTitle find data by title
 func GetByTitle(c pb.UserServiceClient, input *pb.GetByTitleRequest) (*pb.GetByTitleResponse, error) {
 	ctx, err := GetSessionAndPutInMD()
 	if err != nil {
@@ -126,6 +127,7 @@ func GetByTitle(c pb.UserServiceClient, input *pb.GetByTitleRequest) (*pb.GetByT
 	return res, nil
 }
 
+// GetFullList find all type of data
 func GetFullList(c pb.UserServiceClient, input *pb.GetFullListRequest) (*pb.GetFullListResponse, error) {
 	ctx, err := GetSessionAndPutInMD()
 	if err != nil {

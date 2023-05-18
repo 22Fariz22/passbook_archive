@@ -87,27 +87,33 @@ func (u *userUseCase) Login(ctx context.Context, login string, password string) 
 	return foundUser, err
 }
 
+// AddAccount Add  account data
 func (u *userUseCase) AddAccount(ctx context.Context, userID string, request *userService.AddAccountRequest) error {
 	log.Println("uc AddAccount userID", userID)
 	return u.userPgRepo.AddAccount(ctx, userID, request)
 }
 
+// AddText add text data
 func (u *userUseCase) AddText(ctx context.Context, userID string, request *userService.AddTextRequest) error {
 	return u.userPgRepo.AddText(ctx, userID, request)
 }
 
+// AddBinary add binary data
 func (u *userUseCase) AddBinary(ctx context.Context, userID string, request *userService.AddBinaryRequest) error {
 	return u.userPgRepo.AddBinary(ctx, userID, request)
 }
 
+// AddCard add card data
 func (u *userUseCase) AddCard(ctx context.Context, userID string, request *userService.AddCardRequest) error {
 	return u.userPgRepo.AddCard(ctx, userID, request)
 }
 
+// GetByTitle find data by title
 func (u *userUseCase) GetByTitle(ctx context.Context, userID string, request *userService.GetByTitleRequest) ([]string, error) {
 	return u.userPgRepo.GetByTitle(ctx, userID, request)
 }
 
+// GetFullList find all type of data
 func (u *userUseCase) GetFullList(ctx context.Context, userID string) ([]string, error) {
 	return u.userPgRepo.GetFullList(ctx, userID)
 }

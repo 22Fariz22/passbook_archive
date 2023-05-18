@@ -3,6 +3,8 @@ module github.com/22Fariz22/passbook
 go 1.20
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0
+	github.com/alicebob/miniredis v2.5.0+incompatible
 	github.com/go-playground/validator/v10 v10.13.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang/mock v1.6.0
@@ -21,6 +23,7 @@ require (
 )
 
 require (
+	github.com/alicebob/gopher-json v0.0.0-20230218143504-906a9b012302 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cockroachdb/apd v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -30,6 +33,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/gomodule/redigo v1.8.9 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
@@ -45,6 +49,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
+	github.com/yuin/gopher-lua v1.1.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/net v0.8.0 // indirect

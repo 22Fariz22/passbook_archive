@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"errors"
+	"log"
+
 	"github.com/22Fariz22/passbook/server/internal/entity"
 	"github.com/22Fariz22/passbook/server/pkg/grpc_errors"
 	"github.com/22Fariz22/passbook/server/pkg/utils"
@@ -12,7 +14,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"log"
 )
 
 // Register new user
@@ -130,6 +131,7 @@ func (u *usersService) Logout(ctx context.Context, request *userService.LogoutRe
 	return &userService.LogoutResponse{}, nil
 }
 
+// AddAccount save account data
 func (u *usersService) AddAccount(ctx context.Context, request *userService.AddAccountRequest) (*userService.AddAccountResponse, error) {
 	session, err := checkSessionAndGetUserID(u, ctx)
 	if err != nil {
@@ -144,6 +146,7 @@ func (u *usersService) AddAccount(ctx context.Context, request *userService.AddA
 	return nil, nil
 }
 
+// AddText save text data
 func (u *usersService) AddText(ctx context.Context, request *userService.AddTextRequest) (*userService.AddTextResponse, error) {
 	session, err := checkSessionAndGetUserID(u, ctx)
 	if err != nil {
@@ -158,6 +161,7 @@ func (u *usersService) AddText(ctx context.Context, request *userService.AddText
 	return nil, nil
 }
 
+// AddBinary save binary data
 func (u *usersService) AddBinary(ctx context.Context, request *userService.AddBinaryRequest) (*userService.AddBinaryResponse, error) {
 	session, err := checkSessionAndGetUserID(u, ctx)
 	if err != nil {
@@ -172,6 +176,7 @@ func (u *usersService) AddBinary(ctx context.Context, request *userService.AddBi
 	return nil, nil
 }
 
+// AddCard save to card data
 func (u *usersService) AddCard(ctx context.Context, request *userService.AddCardRequest) (*userService.AddCardResponse, error) {
 	session, err := checkSessionAndGetUserID(u, ctx)
 	if err != nil {
@@ -186,6 +191,7 @@ func (u *usersService) AddCard(ctx context.Context, request *userService.AddCard
 	return nil, nil
 }
 
+// GetByTitle get user's data by title
 func (u *usersService) GetByTitle(ctx context.Context, request *userService.GetByTitleRequest) (*userService.GetByTitleResponse, error) {
 	session, err := checkSessionAndGetUserID(u, ctx)
 	if err != nil {
@@ -200,6 +206,7 @@ func (u *usersService) GetByTitle(ctx context.Context, request *userService.GetB
 	return &userService.GetByTitleResponse{Data: data}, err
 }
 
+// GetFullList get all user's data
 func (u *usersService) GetFullList(ctx context.Context, request *userService.GetFullListRequest) (*userService.GetFullListResponse, error) {
 	session, err := checkSessionAndGetUserID(u, ctx)
 	if err != nil {
