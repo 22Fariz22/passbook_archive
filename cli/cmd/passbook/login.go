@@ -15,7 +15,7 @@ var loginResp pb.LoginResponse
 var loginCmd = &cobra.Command{
 	Use:     "login",
 	Aliases: []string{"log"},
-	Short:   "sign-in",
+	Short:   "it's like a sign-in",
 	Run: func(cmd *cobra.Command, args []string) {
 		conn, err := grpc.Dial(":5001", grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {

@@ -11,10 +11,10 @@ import (
 )
 
 var logoutCmd = &cobra.Command{
-	Use: "logout",
-	//Aliases: []string{"out"},
-	Short: "out",
-	Long:  "выходим из системы",
+	Use:     "logout",
+	Aliases: []string{"out"},
+	Short:   "out",
+	Long:    "выходим из системы",
 	Run: func(cmd *cobra.Command, args []string) {
 		conn, err := grpc.Dial(":5001", grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {

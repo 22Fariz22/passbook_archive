@@ -32,7 +32,7 @@ var getByTitleCmd = &cobra.Command{
 			return
 		}
 
-		//как вывести сюда список из пг
+		//выводим список секретов
 		for _, v := range res.Data {
 			fmt.Println(v)
 		}
