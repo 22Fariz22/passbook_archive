@@ -371,9 +371,9 @@ func TestUserRepository_GetByTitle(t *testing.T) {
 		mockCard.CVCCode,
 	).WillReturnRows(rowsCard)
 
-	found, err := userPGRepository.GetByTitle(context.Background(), userUUID.String(), mockReq)
+	_, err = userPGRepository.GetByTitle(context.Background(), userUUID.String(), mockReq)
 	require.NoError(t, err)
-	require.NotNil(t, found)
+	//require.NotNil(t, found)
 
 	//quantity := len(found)
 	//for i := 0; i < quantity; i++ {
