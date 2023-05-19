@@ -279,18 +279,15 @@ func TestUserRepository_GetByTitle(t *testing.T) {
 		Title: "my title",
 	}
 
-	columnsAccount := []string{"user_id", "title", "login", "password"}
-	columnsText := []string{"user_id", "title", "data"}
-	columnsBinary := []string{"user_id", "title", "data"}
-	columnsCard := []string{"user_id", "title", "name", "card_number", "date_exp", "cvc_code"}
-
 	//mock account entity
 	mockAccount := &entity.Account{
 		UserID:   userUUID.String(),
 		Title:    "my title",
-		Login:    []byte("my login"),
-		Password: []byte("my password"),
+		Login:    encrypt("my login"),
+		Password: encrypt("my password"),
 	}
+
+	columnsAccount := []string{"user_id", "title", "login", "password"}
 
 	rowsAccount := sqlmock.NewRows(columnsAccount).AddRow(
 		mockAccount.UserID,
@@ -299,12 +296,19 @@ func TestUserRepository_GetByTitle(t *testing.T) {
 		mockAccount.Password,
 	)
 
-	//mock text entity
+	mock.ExpectQuery(getByTitleAccountsQuery).WithArgs(
+		userUUID.String(),
+		mockAccount.Title,
+	).WillReturnRows(rowsAccount)
+
+	//mock texts
 	mockText := &entity.Text{
 		UserID: userUUID.String(),
 		Title:  "my title",
-		Data:   []byte("my text data"),
+		Data:   encrypt("my text data"),
 	}
+
+	columnsText := []string{"user_id", "title", "data"}
 
 	rowsText := sqlmock.NewRows(columnsText).AddRow(
 		mockText.UserID,
@@ -312,28 +316,23 @@ func TestUserRepository_GetByTitle(t *testing.T) {
 		mockText.Data,
 	)
 
-	//mock binary entity
-	mockBinary := &entity.Binary{
-		UserID: userUUID.String(),
-		Title:  "my title",
-		Data:   []byte("my text data"),
-	}
+	mock.ExpectQuery(getByTitleTextQuery).WithArgs(
+		userUUID.String(),
+		mockText.Title,
+	).WillReturnRows(rowsText)
 
-	rowsBinary := sqlmock.NewRows(columnsBinary).AddRow(
-		mockBinary.UserID,
-		mockBinary.Title,
-		mockBinary.Data,
-	)
-
-	//mock card entity
+	//mock card
 	mockCard := &entity.Card{
 		UserID:     userUUID.String(),
 		Title:      "my title",
-		CardNumber: []byte("my card number"),
-		Name:       []byte("my name"),
-		DateExp:    []byte("my exp date"),
-		CVCCode:    []byte("my cvc code"),
+		Name:       encrypt("my name"),
+		CardNumber: encrypt("my card number"),
+		DateExp:    encrypt("my exp date"),
+		CVCCode:    encrypt("my cvc code"),
 	}
+
+	columnsCard := []string{"user_id", "title", "name", "card_number", "date_exp", "cvc_code"}
+
 	rowsCard := sqlmock.NewRows(columnsCard).AddRow(
 		mockCard.UserID,
 		mockCard.Title,
@@ -343,46 +342,135 @@ func TestUserRepository_GetByTitle(t *testing.T) {
 		mockCard.CVCCode,
 	)
 
-	mock.ExpectQuery(getByTitleAccountsQuery).WithArgs(
+	mock.ExpectQuery(getByTitleCardQuery).WithArgs(
 		userUUID.String(),
-		mockAccount.Title,
-		mockAccount.Login,
-		mockAccount.Password,
-	).WillReturnRows(rowsAccount)
+		mockCard.Title,
+	).WillReturnRows(rowsCard)
 
-	mock.ExpectQuery(getByTitleTextQuery).WithArgs(
-		userUUID.String(),
+	//mock binary
+	mockBinary := &entity.Binary{
+		UserID: userUUID.String(),
+		Title:  "my title",
+		Data:   []byte("loreom dorom este"),
+	}
+
+	columnsBinary := []string{"user_id", "title", "data"}
+
+	rowsBinary := sqlmock.NewRows(columnsBinary).AddRow(
+		mockBinary.UserID,
 		mockBinary.Title,
 		mockBinary.Data,
-	).WillReturnRows(rowsText)
+	)
 
 	mock.ExpectQuery(getByTitleBinaryQuery).WithArgs(
 		userUUID.String(),
 		mockBinary.Title,
-		mockBinary.Data,
 	).WillReturnRows(rowsBinary)
 
-	mock.ExpectQuery(getByTitleCardQuery).WithArgs(
+	found, err := userPGRepository.GetByTitle(context.Background(), userUUID.String(), mockReq)
+	require.NoError(t, err)
+	require.NotNil(t, found)
+}
+
+func TestUserRepository_GetFullList(t *testing.T) {
+	t.Parallel()
+
+	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
+	require.NoError(t, err)
+	defer db.Close()
+
+	sqlxDB := sqlx.NewDb(db, "sqlmock")
+	defer sqlxDB.Close()
+
+	userPGRepository := NewUserPGRepository(sqlxDB)
+
+	userUUID := uuid.New()
+
+	//mock account entity
+	mockAccount := &entity.Account{
+		UserID:   userUUID.String(),
+		Title:    "my title",
+		Login:    encrypt("my login"),
+		Password: encrypt("my password"),
+	}
+
+	columnsAccount := []string{"user_id", "title", "login", "password"}
+
+	rowsAccount := sqlmock.NewRows(columnsAccount).AddRow(
+		mockAccount.UserID,
+		mockAccount.Title,
+		mockAccount.Login,
+		mockAccount.Password,
+	)
+
+	mock.ExpectQuery(getByFullListAccountsQuery).WithArgs(
 		userUUID.String(),
+	).WillReturnRows(rowsAccount)
+
+	//mock texts
+	mockText := &entity.Text{
+		UserID: userUUID.String(),
+		Title:  "my title",
+		Data:   encrypt("my text data"),
+	}
+
+	columnsText := []string{"user_id", "title", "data"}
+
+	rowsText := sqlmock.NewRows(columnsText).AddRow(
+		mockText.UserID,
+		mockText.Title,
+		mockText.Data,
+	)
+
+	mock.ExpectQuery(getByFullListTextQuery).WithArgs(
+		userUUID.String(),
+	).WillReturnRows(rowsText)
+
+	//mock card
+	mockCard := &entity.Card{
+		UserID:     userUUID.String(),
+		Title:      "my title",
+		Name:       encrypt("my name"),
+		CardNumber: encrypt("my card number"),
+		DateExp:    encrypt("my exp date"),
+		CVCCode:    encrypt("my cvc code"),
+	}
+
+	columnsCard := []string{"user_id", "title", "name", "card_number", "date_exp", "cvc_code"}
+
+	rowsCard := sqlmock.NewRows(columnsCard).AddRow(
+		mockCard.UserID,
 		mockCard.Title,
 		mockCard.Name,
 		mockCard.CardNumber,
 		mockCard.DateExp,
 		mockCard.CVCCode,
+	)
+
+	mock.ExpectQuery(getByFullListCardQuery).WithArgs(
+		userUUID.String(),
 	).WillReturnRows(rowsCard)
 
-	_, err = userPGRepository.GetByTitle(context.Background(), userUUID.String(), mockReq)
+	//mock binary
+	mockBinary := &entity.Binary{
+		UserID: userUUID.String(),
+		Title:  "my title",
+		Data:   []byte("loreom dorom este"),
+	}
+
+	columnsBinary := []string{"user_id", "title", "data"}
+
+	rowsBinary := sqlmock.NewRows(columnsBinary).AddRow(
+		mockBinary.UserID,
+		mockBinary.Title,
+		mockBinary.Data,
+	)
+
+	mock.ExpectQuery(getByFullListBinaryQuery).WithArgs(
+		userUUID.String(),
+	).WillReturnRows(rowsBinary)
+
+	found, err := userPGRepository.GetFullList(context.Background(), userUUID.String())
 	require.NoError(t, err)
-	//require.NotNil(t, found)
-
-	//quantity := len(found)
-	//for i := 0; i < quantity; i++ {
-	//	for k := range found[i] {
-	//		fmt.Println("k:", k)
-	//		select {
-	//		// в зависимости от типа данных, выбираем сравнение сравниваем 	require.Equal()
-	//		}
-	//	}
-	//}
-
+	require.NotNil(t, found)
 }

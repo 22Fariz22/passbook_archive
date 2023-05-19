@@ -68,8 +68,8 @@ type Binary struct {
 type Card struct {
 	UserID     string `json:"user_id" db:"user_id"`
 	Title      string `json:"title" db:"title" validate:"required,lte=30"`
-	CardNumber []byte `db:"card_number"`
 	Name       []byte `db:"name"`
+	CardNumber []byte `db:"card_number"`
 	DateExp    []byte `db:"date_exp"`
 	CVCCode    []byte `db:"cvc_code"`
 }

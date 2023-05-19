@@ -115,7 +115,6 @@ func (r *UserRepository) AddCard(ctx context.Context, userID string, request *us
 
 // GetByTitle find data by title
 func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request *userService.GetByTitleRequest) ([]string, error) {
-
 	//here all data from db
 	var everythingByTitle []string
 
@@ -127,7 +126,7 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 	//get accounts
 	err := r.db.Select(&accounts, getByTitleAccountsQuery, userID, request.Title)
 	if err != nil {
-		log.Println("err GetByTitle:", err)
+		log.Println("err in repo GetByAccount:", err)
 	}
 	for _, v := range accounts {
 		decrLogin := decrypt(v.Login)
@@ -138,7 +137,7 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 	//get texts
 	err = r.db.Select(&texts, getByTitleTextQuery, userID, request.Title)
 	if err != nil {
-		log.Println("err GetByText:", err)
+		log.Println("err in repo err GetByText:", err)
 	}
 
 	for _, v := range texts {
@@ -149,11 +148,11 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 	//get cards
 	err = r.db.Select(&cards, getByTitleCardQuery, userID, request.Title)
 	if err != nil {
-		log.Println("err GetByCard:", err)
+		log.Println("err in repo  GetByCard:", err)
 	}
 	for _, v := range cards {
-		decrCardNumber := decrypt(v.CardNumber)
 		decrName := decrypt(v.Name)
+		decrCardNumber := decrypt(v.CardNumber)
 		decrDateExp := decrypt(v.DateExp)
 		decrCVCCode := decrypt(v.CVCCode)
 

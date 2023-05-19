@@ -14,16 +14,16 @@ CREATE TABLE accounts
 (
     user_id    VARCHAR,
     title      VARCHAR(32)              NOT NULL,
-    login      bytea             NOT NULL,
-    password       bytea         NOT NULL
+    login      bytea                     NOT NULL,
+    password       bytea                 NOT NULL
 );
 
 CREATE TABLE cards
 (
     user_id         VARCHAR,
     title           VARCHAR(32)        NOT NULL,
-    card_number     bytea       NOT NULL,
-    name           bytea,
+    name           bytea                NOT NULL,
+    card_number     bytea                NOT NULL,
     date_exp        bytea,
     cvc_code       bytea
 );
@@ -32,7 +32,7 @@ CREATE TABLE binaries
 (
     user_id    VARCHAR,
     title      VARCHAR(32)              NOT NULL  ,
-    data       bytea           NOT NULL
+    data       bytea                     NOT NULL
 );
 
 CREATE TABLE texts

@@ -29,9 +29,9 @@ const (
 		JOIN cards on accounts.user_id = cards.user_id
 		WHERE user_id = $1 and title = $2`
 
-	getByTitleAccountsQuery = `SELECT login,password FROM accounts WHERE user_id= $1 and title = $2`
+	getByTitleAccountsQuery = `SELECT login, password FROM accounts WHERE user_id= $1 and title = $2`
 	getByTitleTextQuery     = `SELECT data FROM texts WHERE user_id= $1 and title = $2`
-	getByTitleCardQuery     = `SELECT card_number,name,date_exp,cvc_code FROM cards WHERE user_id= $1 and title = $2`
+	getByTitleCardQuery     = `SELECT name, card_number, date_exp, cvc_code FROM cards WHERE user_id= $1 and title = $2`
 	getByTitleBinaryQuery   = `SELECT data FROM binaries WHERE user_id= $1 and title = $2`
 
 	getByFullListAccountsQuery = `SELECT title,login,password FROM accounts WHERE user_id= $1`
