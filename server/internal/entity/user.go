@@ -52,24 +52,24 @@ type Account struct {
 
 // Text
 type Text struct {
-	UserID uuid.UUID `json:"user_id" db:"user_id" `
-	Title  string    `json:"title" db:"title" validate:"required,lte=30"`
-	Data   []byte    `json:"data" db:"data" validate:"omitempty"`
+	UserID string `json:"user_id" db:"user_id" `
+	Title  string `json:"title" db:"title" validate:"required,lte=30"`
+	Data   []byte `json:"data" db:"data" validate:"omitempty"`
 }
 
 // Binary
 type Binary struct {
-	UserID uuid.UUID `json:"user_id" db:"user_id"`
-	Title  string    `json:"title" db:"title" validate:"required,lte=30"`
-	Data   []byte    `json:"data" db:"data" validate:"omitempty"`
+	UserID string `json:"user_id" db:"user_id"`
+	Title  string `json:"title" db:"title" validate:"required,lte=30"`
+	Data   []byte `json:"data" db:"data" validate:"omitempty"`
 }
 
 // Card
 type Card struct {
-	UserID     uuid.UUID `json:"user_id" db:"user_id"`
-	Title      string    `json:"title" db:"title" validate:"required,lte=30"`
-	CardNumber []byte    `db:"card_number"`
-	Name       []byte    `db:"name"`
-	DateExp    []byte    `db:"date_exp"`
-	CVCCode    []byte    `db:"cvc_code"`
+	UserID     string `json:"user_id" db:"user_id"`
+	Title      string `json:"title" db:"title" validate:"required,lte=30"`
+	CardNumber []byte `db:"card_number"`
+	Name       []byte `db:"name"`
+	DateExp    []byte `db:"date_exp"`
+	CVCCode    []byte `db:"cvc_code"`
 }
