@@ -123,3 +123,40 @@ func TestUsersService_FindByLogin(t *testing.T) {
 		require.Equal(t, reqValue.Login, response.User.Login)
 	})
 }
+
+func Test_usersService_FindByID(t *testing.T) {
+	t.Parallel()
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	userUC := mock.NewMockUserUseCase(ctrl)
+	sessUC := mockSessUC.NewMockSessionUseCase(ctrl)
+	apiLogger := logger.NewAPILogger(nil)
+	cfg := &config.Config{Session: config.Session{
+		Expire: 10,
+	}}
+	authServerGRPC := NewAuthServerGRPC(apiLogger, cfg, userUC, sessUC)
+
+	userID := uuid.New()
+
+	reqValue := &userService.FindByIDRequest{Uuid: userID.String()}
+
+	t.Run("FindByID", func(t *testing.T) {
+		t.Parallel()
+
+		user := &entity.User{
+			UserID:   userID,
+			Login:    "email@gmail.com",
+			Password: "Password",
+		}
+
+		//ожидаемый ответ от UC
+		userUC.EXPECT().FindById(gomock.Any(), userID).Return(user, nil)
+
+		response, err := authServerGRPC.FindByID(context.Background(), reqValue)
+
+		require.NoError(t, err)
+		require.NotNil(t, response)
+		require.Equal(t, reqValue.Uuid, response.User.Uuid)
+	})
+}
