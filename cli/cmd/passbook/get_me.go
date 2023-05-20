@@ -10,11 +10,10 @@ import (
 	"log"
 )
 
-var logoutCmd = &cobra.Command{
-	Use:     "logout",
-	Aliases: []string{"out"},
-	Short:   "out",
-	Long:    "выходим из системы",
+var getMeCmd = &cobra.Command{
+	Use:     "getme",
+	Aliases: []string{"me"},
+	Short:   "Get your currently account session",
 	Run: func(cmd *cobra.Command, args []string) {
 		conn, err := grpc.Dial(":5001", grpc.WithTransportCredentials(insecure.NewCredentials()))
 		if err != nil {
@@ -25,16 +24,15 @@ var logoutCmd = &cobra.Command{
 		// через которую будем отправлять сообщения
 		c := pb.NewUserServiceClient(conn)
 
-		err = pkg.Logout(c, &pb.LogoutRequest{})
+		user, err := pkg.GetMe(c, &pb.GetMeRequest{})
 		if err != nil {
-			log.Fatal(err)
-			return
+			log.Println("you don't have a session")
 		}
-		fmt.Println("you got out")
+		fmt.Println("ID:", user.User.Uuid)
+		fmt.Println("Login:", user.User.Login)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(logoutCmd)
-
+	rootCmd.AddCommand(getMeCmd)
 }

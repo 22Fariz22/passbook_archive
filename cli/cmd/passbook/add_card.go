@@ -35,7 +35,7 @@ func init() {
 	rootCmd.AddCommand(addCardCmd)
 	addCardCmd.Flags().StringVarP(&addCardRequest.Title, "title", "t", "", "title to save")
 	addCardCmd.Flags().StringVarP(&addCardRequest.Name, "name", "n", "", "name to save")
-	addCardCmd.Flags().StringVarP(&addCardRequest.CardNumber, "card", "c", "", "card number to save")
+	addCardCmd.Flags().StringVarP(&addCardRequest.CardNumber, "card", "", "", "card number to save")
 	addCardCmd.Flags().StringVarP(&addCardRequest.DateExp, "date", "d", "", "date expiration to save")
 	addCardCmd.Flags().StringVarP(&addCardRequest.CvcCode, "cvc", "", "", "cvc code to save")
 

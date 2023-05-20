@@ -13,7 +13,6 @@ const (
 		VALUES ($1, $2, $3, $4)
 		RETURNING title
 		`
-	//RETURNING user_id, title, login, password
 	addTextQuery = `INSERT INTO texts (user_id, title, data)
 		VALUES ($1, $2, $3)`
 

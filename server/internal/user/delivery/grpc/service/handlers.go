@@ -59,14 +59,14 @@ func (u *usersService) Login(ctx context.Context, r *userService.LoginRequest) (
 	return &userService.LoginResponse{User: u.userModelToProto(user), SessionId: session}, err
 }
 
-// Find user by email address
+// Find user by login
 func (u *usersService) FindByLogin(ctx context.Context, r *userService.FindByLoginRequest) (*userService.FindByLoginResponse, error) {
 	login := r.GetLogin()
 
 	user, err := u.userUC.FindByLogin(ctx, login)
 	if err != nil {
-		u.logger.Errorf("userUC.FindByEmail: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "userUC.FindByEmail: %v", err)
+		u.logger.Errorf("userUC.FindByLogin: %v", err)
+		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "userUC.FindByLogin: %v", err)
 	}
 
 	return &userService.FindByLoginResponse{User: u.userModelToProto(user)}, err
@@ -138,7 +138,7 @@ func (u *usersService) AddAccount(ctx context.Context, request *userService.AddA
 		return nil, err
 	}
 
-	err = u.userUC.AddAccount(ctx, session.UserID.String(), request) //request.GetTitle(),request.GetLogin(),request.GetPassword()
+	err = u.userUC.AddAccount(ctx, session.UserID.String(), request)
 	if err != nil {
 		return nil, err
 	}

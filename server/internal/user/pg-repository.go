@@ -3,10 +3,10 @@ package user
 
 import (
 	"context"
+	"github.com/google/uuid"
 
 	"github.com/22Fariz22/passbook/server/internal/entity"
 	userService "github.com/22Fariz22/passbook/server/proto"
-	"github.com/google/uuid"
 )
 
 // User pg repository

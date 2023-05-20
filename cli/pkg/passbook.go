@@ -69,6 +69,20 @@ func Logout(c pb.UserServiceClient, input *pb.LogoutRequest) error {
 	return nil
 }
 
+func GetMe(c pb.UserServiceClient, input *pb.GetMeRequest) (*pb.GetMeResponse, error) {
+	ctx, err := GetSessionAndPutInMD()
+	if err != nil {
+		return &pb.GetMeResponse{}, err
+	}
+
+	user, err := c.GetMe(ctx, input)
+	if err != nil {
+		return &pb.GetMeResponse{}, err
+	}
+
+	return user, nil
+}
+
 // AddAccount вызов rpc AddAccount -> добавить в хранилище сведдения об аккаунте
 func AddAccount(c pb.UserServiceClient, input *pb.AddAccountRequest) error {
 	ctx, err := GetSessionAndPutInMD()

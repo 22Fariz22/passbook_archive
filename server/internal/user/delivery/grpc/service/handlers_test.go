@@ -106,7 +106,7 @@ func TestUsersService_FindByLogin(t *testing.T) {
 		Login: "email@gmail.com",
 	}
 
-	t.Run("FindByEmail", func(t *testing.T) {
+	t.Run("FindByLogin", func(t *testing.T) {
 		t.Parallel()
 		userID := uuid.New()
 		user := &entity.User{

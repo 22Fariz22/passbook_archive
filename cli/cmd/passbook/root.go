@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-var version = "0.0.1"
+var version = "v0.0.1  20.05.2023"
 
 var rootCmd = &cobra.Command{
 	Use:     "passbook",
@@ -15,6 +15,7 @@ var rootCmd = &cobra.Command{
 	Version: version,
 
 	Run: func(cmd *cobra.Command, args []string) {
+
 		fmt.Println("passbook is ready")
 	},
 }
