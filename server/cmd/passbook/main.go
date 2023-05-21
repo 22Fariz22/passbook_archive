@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	log.Println("Starting auth microservice")
+	log.Println("Starting service")
 
 	configPath := utils.GetConfigPath(os.Getenv("config"))
 	cfg, err := config.GetConfig(configPath)

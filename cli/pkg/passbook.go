@@ -4,11 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	pb "github.com/22Fariz22/passbook/server/proto"
-	"google.golang.org/grpc/metadata"
 	"io/ioutil"
 	"log"
 	"os"
+
+	pb "github.com/22Fariz22/passbook/server/proto"
+	"google.golang.org/grpc/metadata"
 )
 
 type Acc struct {
