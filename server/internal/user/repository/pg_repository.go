@@ -124,7 +124,7 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 	binaries := []entity.Binary{}
 
 	//get accounts
-	err := r.db.Select(&accounts, getByTitleAccountsQuery, userID, request.Title)
+	err := r.db.SelectContext(ctx, &accounts, getByTitleAccountsQuery, userID, request.Title)
 	if err != nil {
 		log.Println("err in repo GetByAccount:", err)
 	}
@@ -135,7 +135,7 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 	}
 
 	//get texts
-	err = r.db.Select(&texts, getByTitleTextQuery, userID, request.Title)
+	err = r.db.SelectContext(ctx, &texts, getByTitleTextQuery, userID, request.Title)
 	if err != nil {
 		log.Println("err in repo err GetByText:", err)
 	}
@@ -146,7 +146,7 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 	}
 
 	//get cards
-	err = r.db.Select(&cards, getByTitleCardQuery, userID, request.Title)
+	err = r.db.SelectContext(ctx, &cards, getByTitleCardQuery, userID, request.Title)
 	if err != nil {
 		log.Println("err in repo  GetByCard:", err)
 	}
@@ -161,7 +161,7 @@ func (r *UserRepository) GetByTitle(ctx context.Context, userID string, request 
 	}
 
 	//get binaries
-	err = r.db.Select(&binaries, getByTitleBinaryQuery, userID, request.Title)
+	err = r.db.SelectContext(ctx, &binaries, getByTitleBinaryQuery, userID, request.Title)
 	if err != nil {
 		log.Println("err GetByBinary:", err)
 	}
@@ -183,7 +183,7 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]stri
 	binaries := []entity.Binary{}
 
 	//get accounts
-	err := r.db.Select(&accounts, getByFullListAccountsQuery, userID)
+	err := r.db.SelectContext(ctx, &accounts, getByFullListAccountsQuery, userID)
 	if err != nil {
 		log.Println("err getByFullListAccountsQuery:", err)
 	}
@@ -194,7 +194,7 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]stri
 	}
 
 	//get texts
-	err = r.db.Select(&texts, getByFullListTextQuery, userID)
+	err = r.db.SelectContext(ctx, &texts, getByFullListTextQuery, userID)
 	if err != nil {
 		log.Println("err getByFullListTextQuery:", err)
 	}
@@ -204,7 +204,7 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]stri
 	}
 
 	//get cards
-	err = r.db.Select(&cards, getByFullListCardQuery, userID)
+	err = r.db.SelectContext(ctx, &cards, getByFullListCardQuery, userID)
 	if err != nil {
 		log.Println("err getByFullListCardQuery:", err)
 	}
@@ -218,7 +218,7 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]stri
 	}
 
 	//get binaries
-	err = r.db.Select(&binaries, getByFullListBinaryQuery, userID)
+	err = r.db.SelectContext(ctx, &binaries, getByFullListBinaryQuery, userID)
 	if err != nil {
 		log.Println("err getByFullListBinaryQuery:", err)
 	}
