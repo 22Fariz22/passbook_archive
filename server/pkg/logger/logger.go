@@ -1,104 +1,150 @@
 package logger
 
 import (
-	"fmt"
+	"github.com/22Fariz22/passbook/server/config"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"os"
-	"strings"
-	"time"
-
-	"github.com/rs/zerolog"
 )
 
-// Interface -.
-type Interface interface {
-	Debug(message interface{}, args ...interface{})
-	Info(message string, args ...interface{})
-	Warn(message string, args ...interface{})
-	Error(message interface{}, args ...interface{})
-	Fatal(message interface{}, args ...interface{})
+// Logger methods interface
+type Logger interface {
+	InitLogger()
+	Debug(args ...interface{})
+	Debugf(template string, args ...interface{})
+	Info(args ...interface{})
+	Infof(template string, args ...interface{})
+	Warn(args ...interface{})
+	Warnf(template string, args ...interface{})
+	Error(args ...interface{})
+	Errorf(template string, args ...interface{})
+	DPanic(args ...interface{})
+	DPanicf(template string, args ...interface{})
+	Fatal(args ...interface{})
+	Fatalf(template string, args ...interface{})
 }
 
-// Logger -.
-type Logger struct {
-	logger *zerolog.Logger
+// Logger
+type apiLogger struct {
+	cfg         *config.Config
+	sugarLogger *zap.SugaredLogger
 }
 
-var _ Interface = (*Logger)(nil)
+// App Logger constructor
+func NewAPILogger(cfg *config.Config) *apiLogger {
+	return &apiLogger{cfg: cfg}
+}
 
-// New -.
-func New(level string) *Logger {
-	var l zerolog.Level
+// For mapping config logger to app logger levels
+var loggerLevelMap = map[string]zapcore.Level{
+	"debug":  zapcore.DebugLevel,
+	"info":   zapcore.InfoLevel,
+	"warn":   zapcore.WarnLevel,
+	"error":  zapcore.ErrorLevel,
+	"dpanic": zapcore.DPanicLevel,
+	"panic":  zapcore.PanicLevel,
+	"fatal":  zapcore.FatalLevel,
+}
 
-	switch strings.ToLower(level) {
-	case "error":
-		l = zerolog.ErrorLevel
-	case "warn":
-		l = zerolog.WarnLevel
-	case "info":
-		l = zerolog.InfoLevel
-	case "debug":
-		l = zerolog.DebugLevel
-	default:
-		l = zerolog.InfoLevel
+func (l *apiLogger) getLoggerLevel(cfg *config.Config) zapcore.Level {
+	level, exist := loggerLevelMap[cfg.Logger.Level]
+	if !exist {
+		return zapcore.DebugLevel
 	}
 
-	zerolog.SetGlobalLevel(l)
-
-	skipFrameCount := 3
-	//logger := zerolog.New(os.Stdout).With().Timestamp().CallerWithSkipFrameCount(zerolog.CallerSkipFrameCount + skipFrameCount).Logger()
-	logger := zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339}).With().Timestamp().CallerWithSkipFrameCount(zerolog.CallerSkipFrameCount + skipFrameCount).Logger()
-
-	return &Logger{
-		logger: &logger,
-	}
+	return level
 }
 
-// Debug -.
-func (l *Logger) Debug(message interface{}, args ...interface{}) {
-	l.msg("debug", message, args...)
-}
+// Init logger
+func (l *apiLogger) InitLogger() {
+	logLevel := l.getLoggerLevel(l.cfg)
 
-// Info -.
-func (l *Logger) Info(message string, args ...interface{}) {
-	l.log(message, args...)
-}
+	logWriter := zapcore.AddSync(os.Stderr)
 
-// Warn -.
-func (l *Logger) Warn(message string, args ...interface{}) {
-	l.log(message, args...)
-}
-
-// Error -.
-func (l *Logger) Error(message interface{}, args ...interface{}) {
-	if l.logger.GetLevel() == zerolog.DebugLevel {
-		l.Debug(message, args...)
-	}
-
-	l.msg("error", message, args...)
-}
-
-// Fatal -.
-func (l *Logger) Fatal(message interface{}, args ...interface{}) {
-	l.msg("fatal", message, args...)
-
-	os.Exit(1)
-}
-
-func (l *Logger) log(message string, args ...interface{}) {
-	if len(args) == 0 {
-		l.logger.Info().Msg(message)
+	var encoderCfg zapcore.EncoderConfig
+	if l.cfg.Server.Mode == "Development" {
+		encoderCfg = zap.NewDevelopmentEncoderConfig()
 	} else {
-		l.logger.Info().Msgf(message, args...)
+		encoderCfg = zap.NewProductionEncoderConfig()
+	}
+
+	var encoder zapcore.Encoder
+	encoderCfg.LevelKey = "LEVEL"
+	encoderCfg.CallerKey = "CALLER"
+	encoderCfg.TimeKey = "TIME"
+	encoderCfg.NameKey = "NAME"
+	encoderCfg.MessageKey = "MESSAGE"
+
+	if l.cfg.Logger.Encoding == "console" {
+		encoder = zapcore.NewConsoleEncoder(encoderCfg)
+	} else {
+		encoder = zapcore.NewJSONEncoder(encoderCfg)
+	}
+
+	encoderCfg.EncodeTime = zapcore.ISO8601TimeEncoder
+	core := zapcore.NewCore(encoder, logWriter, zap.NewAtomicLevelAt(logLevel))
+	logger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
+
+	l.sugarLogger = logger.Sugar()
+	if err := l.sugarLogger.Sync(); err != nil {
+		l.sugarLogger.Error(err)
 	}
 }
 
-func (l *Logger) msg(level string, message interface{}, args ...interface{}) {
-	switch msg := message.(type) {
-	case error:
-		l.log(msg.Error(), args...)
-	case string:
-		l.log(msg, args...)
-	default:
-		l.log(fmt.Sprintf("%s message %v has unknown type %v", level, message, msg), args...)
-	}
+// Logger methods
+
+func (l *apiLogger) Debug(args ...interface{}) {
+	l.sugarLogger.Debug(args...)
+}
+
+func (l *apiLogger) Debugf(template string, args ...interface{}) {
+	l.sugarLogger.Debugf(template, args...)
+}
+
+func (l *apiLogger) Info(args ...interface{}) {
+	l.sugarLogger.Info(args...)
+}
+
+func (l *apiLogger) Infof(template string, args ...interface{}) {
+	l.sugarLogger.Infof(template, args...)
+}
+
+func (l *apiLogger) Warn(args ...interface{}) {
+	l.sugarLogger.Warn(args...)
+}
+
+func (l *apiLogger) Warnf(template string, args ...interface{}) {
+	l.sugarLogger.Warnf(template, args...)
+}
+
+func (l *apiLogger) Error(args ...interface{}) {
+	l.sugarLogger.Error(args...)
+}
+
+func (l *apiLogger) Errorf(template string, args ...interface{}) {
+	l.sugarLogger.Errorf(template, args...)
+}
+
+func (l *apiLogger) DPanic(args ...interface{}) {
+	l.sugarLogger.DPanic(args...)
+}
+
+func (l *apiLogger) DPanicf(template string, args ...interface{}) {
+	l.sugarLogger.DPanicf(template, args...)
+}
+
+func (l *apiLogger) Panic(args ...interface{}) {
+	l.sugarLogger.Panic(args...)
+}
+
+func (l *apiLogger) Panicf(template string, args ...interface{}) {
+	l.sugarLogger.Panicf(template, args...)
+}
+
+func (l *apiLogger) Fatal(args ...interface{}) {
+	l.sugarLogger.Fatal(args...)
+}
+
+func (l *apiLogger) Fatalf(template string, args ...interface{}) {
+	l.sugarLogger.Fatalf(template, args...)
 }

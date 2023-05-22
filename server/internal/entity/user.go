@@ -1,32 +1,75 @@
 package entity
 
+import (
+	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
+)
+
+// User base model
 type User struct {
-	ID       string
-	Login    string
-	Password string
+	UserID   uuid.UUID `json:"user_id" db:"user_id" validate:"omitempty"`
+	Login    string    `json:"login" db:"login" validate:"required,lte=30"`
+	Password string    `json:"password" db:"password"`
 }
 
-// LoginParole
-type LoginParole struct {
-	ID       string
-	Login    string
-	Password string
+// Sanitize password
+func (u *User) SanitizePassword() {
+	u.Password = ""
+}
+
+// Hash user password with bcrypt
+func (u *User) HashPassword() error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	u.Password = string(hashedPassword)
+	return nil
+}
+
+// Compare user password and payload
+func (u *User) ComparePasswords(password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+}
+
+// Prepare user for register
+func (u *User) PrepareCreate() error {
+	if err := u.HashPassword(); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Account
+type Account struct {
+	UserID   string `json:"user_id" db:"user_id"`
+	Title    string `json:"title" db:"title" validate:"required,lte=30"`
+	Login    []byte `json:"login" db:"login" validate:"required,lte=30"`
+	Password []byte `json:"password" db:"password" validate:"required,lte=250"`
+	//CreatedAt time.Time `json:"created_at" db:"created_at"`
+	//UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
 
 // Text
 type Text struct {
-	TextData string
+	UserID string `json:"user_id" db:"user_id" `
+	Title  string `json:"title" db:"title" validate:"required,lte=30"`
+	Data   []byte `json:"data" db:"data" validate:"omitempty"`
 }
 
 // Binary
 type Binary struct {
-	BinaryData byte
+	UserID string `json:"user_id" db:"user_id"`
+	Title  string `json:"title" db:"title" validate:"required,lte=30"`
+	Data   []byte `json:"data" db:"data" validate:"omitempty"`
 }
 
 // Card
 type Card struct {
-	CardNumber     string
-	ExpirationData string
-	CardHolderName string
-	CVCCode        string
+	UserID     string `json:"user_id" db:"user_id"`
+	Title      string `json:"title" db:"title" validate:"required,lte=30"`
+	Name       []byte `db:"name"`
+	CardNumber []byte `db:"card_number"`
+	DateExp    []byte `db:"date_exp"`
+	CVCCode    []byte `db:"cvc_code"`
 }
