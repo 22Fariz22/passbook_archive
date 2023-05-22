@@ -4,24 +4,21 @@ import (
 	"context"
 	"errors"
 	pb "github.com/22Fariz22/passbook/server/proto"
+	"github.com/22Fariz22/passbook/server/proto/mock"
+	"github.com/golang/mock/gomock"
 	"testing"
 )
 
-//type IConn interface {
-//	ConnGRPCServer() pb.UserServiceClient
-//}
-
-func iConnGRPCServer() *pb.UserServiceClient {
-	//server := grpc.NewServer()
-
-	c := pb.UserServiceClient(nil)
-	return &c
-}
-
 func TestRegister(t *testing.T) {
 	ctx := context.Background()
+	t.Parallel()
 
-	client := ConnGRPCServer() //замокать!
+	//client := ConnGRPCServer() // реальный сервер
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	client := mock.NewMockUserServiceServer(ctrl) //NewMockUserServiceClient(ctrl)
 
 	type expectation struct {
 		out pb.RegisterResponse
@@ -41,8 +38,8 @@ func TestRegister(t *testing.T) {
 			expected: expectation{
 				out: pb.RegisterResponse{User: &pb.User{
 					Uuid:     "",
-					Login:    "",
-					Password: "",
+					Login:    "Leo9",
+					Password: "qwer",
 				}},
 				err: errors.New(""),
 			},
@@ -51,11 +48,13 @@ func TestRegister(t *testing.T) {
 
 	for scenario, tt := range tests {
 		t.Run(scenario, func(t *testing.T) {
-			_, err := client.Register(ctx, &tt.in)
-			if err != nil {
-				//t.Errorf("Err -> \nWant: %q\nGot: %q\n", tt.expected.err, err)
-			}
+			client.EXPECT().Register(ctx, &tt.in).Return(&pb.RegisterResponse{}, nil)
 
+			_, err := client.Register(ctx, &tt.in)
+			//require.NoError(t, err)
+			if err != nil {
+				t.Errorf("Err -> \nWant: %q\nGot: %q\n", tt.expected.err, err)
+			}
 		})
 	}
 
