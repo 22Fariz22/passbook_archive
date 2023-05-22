@@ -1,4 +1,4 @@
-package passbook
+package pkg
 
 import (
 	pb "github.com/22Fariz22/passbook/server/proto"

@@ -13,7 +13,7 @@ var getMeCmd = &cobra.Command{
 	Aliases: []string{"me"},
 	Short:   "Get your currently account session",
 	Run: func(cmd *cobra.Command, args []string) {
-		c := ConnGRPCServer()
+		c := pkg.ConnGRPCServer()
 
 		user, err := pkg.GetMe(c, &pb.GetMeRequest{})
 		if err != nil {
@@ -24,6 +24,6 @@ var getMeCmd = &cobra.Command{
 	},
 }
 
-func init() {
-	RootCmd.AddCommand(getMeCmd)
-}
+//func init() {
+//	RootCmd.AddCommand(getMeCmd)
+//}

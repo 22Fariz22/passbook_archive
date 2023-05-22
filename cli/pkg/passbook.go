@@ -12,11 +12,6 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-type Acc struct {
-	Title string
-	Data  string
-}
-
 // Register new user
 func Register(c pb.UserServiceClient, input *pb.RegisterRequest) error {
 	_, err := c.Register(context.Background(), input)

@@ -14,7 +14,7 @@ var loginCmd = &cobra.Command{
 	Aliases: []string{"log"},
 	Short:   "it's like a sign-in",
 	Run: func(cmd *cobra.Command, args []string) {
-		c := ConnGRPCServer()
+		c := pkg.ConnGRPCServer()
 
 		pkg.Login(c, &pb.LoginRequest{
 			Login:    login,
@@ -26,8 +26,8 @@ var loginCmd = &cobra.Command{
 var login string
 var password string
 
-func init() {
-	RootCmd.AddCommand(loginCmd)
-	loginCmd.Flags().StringVarP(&login, "login", "l", "", "it is string to reverse")
-	loginCmd.Flags().StringVarP(&password, "password", "p", "", "it is string to reverse")
-}
+//func init() {
+//	RootCmd.AddCommand(loginCmd)
+//	loginCmd.Flags().StringVarP(&login, "login", "l", "", "it is string to reverse")
+//	loginCmd.Flags().StringVarP(&password, "password", "p", "", "it is string to reverse")
+//}

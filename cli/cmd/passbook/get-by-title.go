@@ -15,7 +15,7 @@ var getByTitleCmd = &cobra.Command{
 	Short: "get secret by title",
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
-		c := ConnGRPCServer()
+		c := pkg.ConnGRPCServer()
 
 		res, err := pkg.GetByTitle(c, &getByTitleRequest)
 		if err != nil {
@@ -29,8 +29,8 @@ var getByTitleCmd = &cobra.Command{
 		}
 	}}
 
-func init() {
-	RootCmd.AddCommand(getByTitleCmd)
-	getByTitleCmd.Flags().StringVarP(&getByTitleRequest.Title, "title", "t", "", "get your secret by title")
-	getByTitleCmd.MarkFlagRequired("title")
-}
+//func init() {
+//	RootCmd.AddCommand(getByTitleCmd)
+//	getByTitleCmd.Flags().StringVarP(&getByTitleRequest.Title, "title", "t", "", "get your secret by title")
+//	getByTitleCmd.MarkFlagRequired("title")
+//}

@@ -15,7 +15,7 @@ var addAccountCmd = &cobra.Command{
 	Short:   "add the account to save",
 	Long:    "",
 	Run: func(cmd *cobra.Command, args []string) {
-		c := ConnGRPCServer()
+		c := pkg.ConnGRPCServer()
 
 		err := pkg.AddAccount(c, &addAccountRequest)
 		if err != nil {

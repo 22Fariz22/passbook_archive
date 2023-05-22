@@ -13,7 +13,7 @@ var registerCmd = &cobra.Command{
 	Aliases: []string{"reg"},
 	Short:   "it's like a sign-up",
 	Run: func(cmd *cobra.Command, args []string) {
-		c := ConnGRPCServer()
+		c := pkg.ConnGRPCServer()
 
 		pkg.Register(c, &pb.RegisterRequest{
 			Login:    registerReq.Login,
@@ -23,8 +23,8 @@ var registerCmd = &cobra.Command{
 	},
 }
 
-func init() {
-	RootCmd.AddCommand(registerCmd)
-	registerCmd.Flags().StringVarP(&registerReq.Login, "login", "l", "", "it is string to reverse")
-	registerCmd.Flags().StringVarP(&registerReq.Password, "password", "p", "", "it is string to reverse")
-}
+//func init() {
+//	RootCmd.AddCommand(registerCmd)
+//	registerCmd.Flags().StringVarP(&registerReq.Login, "login", "l", "", "it is string to reverse")
+//	registerCmd.Flags().StringVarP(&registerReq.Password, "password", "p", "", "it is string to reverse")
+//}

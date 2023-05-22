@@ -13,7 +13,7 @@ var getFullListCmd = &cobra.Command{
 	Short: "get all your secrets",
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
-		c := ConnGRPCServer()
+		c := pkg.ConnGRPCServer()
 
 		res, err := pkg.GetFullList(c, &pb.GetFullListRequest{})
 
@@ -28,6 +28,6 @@ var getFullListCmd = &cobra.Command{
 		}
 	}}
 
-func init() {
-	RootCmd.AddCommand(getFullListCmd)
-}
+//func init() {
+//	RootCmd.AddCommand(getFullListCmd)
+//}

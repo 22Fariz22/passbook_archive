@@ -14,7 +14,7 @@ var logoutCmd = &cobra.Command{
 	Short:   "out",
 	Long:    "выходим из системы",
 	Run: func(cmd *cobra.Command, args []string) {
-		c := ConnGRPCServer()
+		c := pkg.ConnGRPCServer()
 
 		err := pkg.Logout(c, &pb.LogoutRequest{})
 		if err != nil {
@@ -25,7 +25,7 @@ var logoutCmd = &cobra.Command{
 	},
 }
 
-func init() {
-	RootCmd.AddCommand(logoutCmd)
-
-}
+//func init() {
+//	RootCmd.AddCommand(logoutCmd)
+//
+//}

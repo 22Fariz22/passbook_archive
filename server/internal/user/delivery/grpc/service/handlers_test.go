@@ -160,3 +160,47 @@ func Test_usersService_FindByID(t *testing.T) {
 		require.Equal(t, reqValue.Uuid, response.User.Uuid)
 	})
 }
+
+//
+//func Test_usersService_AddAccount(t *testing.T) {
+//	t.Parallel()
+//
+//	ctrl := gomock.NewController(t)
+//	defer ctrl.Finish()
+//	userUC := mock.NewMockUserUseCase(ctrl)
+//	sessUC := mockSessUC.NewMockSessionUseCase(ctrl)
+//	apiLogger := logger.NewAPILogger(nil)
+//	authServerGRPC := NewAuthServerGRPC(apiLogger, nil, userUC, sessUC)
+//
+//	//вставляем наш session_id в metadata
+//	md := metadata.New(map[string]string{"session_id": string("session")})
+//	ctx := metadata.NewOutgoingContext(context.Background(), md)
+//
+//	t.Run("add account", func(t *testing.T) {
+//		t.Parallel()
+//		//userID := uuid.New()
+//		//user := &entity.Account{
+//		//	UserID:   userID.String(),
+//		//	Title:    "",
+//		//	Login:    nil,
+//		//	Password: nil,
+//		//}
+//
+//		var req = new(userService.AddAccountRequest)
+//		req.Title = "sdfsdf"
+//		req.Login = "sdfsdf"
+//		req.Password = "sdfd"
+//
+//		var req2 = new(userService.AddAccountRequest)
+//		req.Title = "sdfsdf"
+//		req.Login = "sdfsdf"
+//		req.Password = "sdfd"
+//
+//		userUC.EXPECT().AddAccount(gomock.Any(), "session", &req).Return(nil)
+//
+//		_, err := authServerGRPC.AddAccount(ctx, req2)
+//		require.NoError(t, err)
+//		//require.NotNil(t, response)
+//		//require.Equal(t, reqValue.Login, response.User.Login)
+//	})
+//}

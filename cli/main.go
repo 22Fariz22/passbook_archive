@@ -5,6 +5,7 @@ import (
 )
 
 func main() {
+	root := passbook.RootCmd
 
-	passbook.Execute()
+	passbook.Execute(root)
 }
