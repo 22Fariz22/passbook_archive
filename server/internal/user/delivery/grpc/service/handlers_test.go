@@ -161,7 +161,6 @@ func Test_usersService_FindByID(t *testing.T) {
 	})
 }
 
-//
 //func Test_usersService_AddAccount(t *testing.T) {
 //	t.Parallel()
 //
@@ -170,7 +169,11 @@ func Test_usersService_FindByID(t *testing.T) {
 //	userUC := mock.NewMockUserUseCase(ctrl)
 //	sessUC := mockSessUC.NewMockSessionUseCase(ctrl)
 //	apiLogger := logger.NewAPILogger(nil)
-//	authServerGRPC := NewAuthServerGRPC(apiLogger, nil, userUC, sessUC)
+//	cfg := &config.Config{Session: config.Session{
+//		Expire: 10,
+//	}}
+//
+//	authServerGRPC := NewAuthServerGRPC(apiLogger, cfg, userUC, sessUC)
 //
 //	//вставляем наш session_id в metadata
 //	md := metadata.New(map[string]string{"session_id": string("session")})
@@ -186,19 +189,14 @@ func Test_usersService_FindByID(t *testing.T) {
 //		//	Password: nil,
 //		//}
 //
-//		var req = new(userService.AddAccountRequest)
+//		var req *userService.AddAccountRequest = new(userService.AddAccountRequest)
 //		req.Title = "sdfsdf"
 //		req.Login = "sdfsdf"
 //		req.Password = "sdfd"
 //
-//		var req2 = new(userService.AddAccountRequest)
-//		req.Title = "sdfsdf"
-//		req.Login = "sdfsdf"
-//		req.Password = "sdfd"
+//		userUC.EXPECT().AddAccount(gomock.Any(), "session", &userService.AddBinaryRequest{}).Return(nil)
 //
-//		userUC.EXPECT().AddAccount(gomock.Any(), "session", &req).Return(nil)
-//
-//		_, err := authServerGRPC.AddAccount(ctx, req2)
+//		_, err := authServerGRPC.AddAccount(ctx, &userService.AddAccountRequest{})
 //		require.NoError(t, err)
 //		//require.NotNil(t, response)
 //		//require.Equal(t, reqValue.Login, response.User.Login)

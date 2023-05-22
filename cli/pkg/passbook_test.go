@@ -2,10 +2,10 @@ package pkg
 
 import (
 	"context"
-	"errors"
 	pb "github.com/22Fariz22/passbook/server/proto"
 	"github.com/22Fariz22/passbook/server/proto/mock"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
 	"testing"
 )
 
@@ -36,12 +36,8 @@ func TestRegister(t *testing.T) {
 		"Must_Success": {
 			in: *req,
 			expected: expectation{
-				out: pb.RegisterResponse{User: &pb.User{
-					Uuid:     "",
-					Login:    "Leo9",
-					Password: "qwer",
-				}},
-				err: errors.New(""),
+				out: pb.RegisterResponse{},
+				err: nil,
 			},
 		},
 	}
@@ -51,7 +47,7 @@ func TestRegister(t *testing.T) {
 			client.EXPECT().Register(ctx, &tt.in).Return(&pb.RegisterResponse{}, nil)
 
 			_, err := client.Register(ctx, &tt.in)
-			//require.NoError(t, err)
+			require.NoError(t, err)
 			if err != nil {
 				t.Errorf("Err -> \nWant: %q\nGot: %q\n", tt.expected.err, err)
 			}
