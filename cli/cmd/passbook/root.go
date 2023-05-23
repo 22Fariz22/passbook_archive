@@ -7,17 +7,20 @@ import (
 
 var version = "v0.0.1  20.05.2023"
 
+// RootCmd главная команда
 var RootCmd = &cobra.Command{
 	Short:   "Passbook keep your private information",
 	Version: version,
 	RunE:    RootCmdRunE,
 }
 
+// RootCmdRunE состав главной команды
 func RootCmdRunE(cmd *cobra.Command, args []string) error {
 	fmt.Println("passbook is ready")
 	return nil
 }
 
+// Execute исполнитель остальных подкоманд
 func Execute(cmd *cobra.Command) error {
 	//addAccountCmd сохраняет данные аккаунта
 	RootCmd.AddCommand(addAccountCmd)

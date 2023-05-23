@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/22Fariz22/passbook/server/internal/entity"
-	"github.com/22Fariz22/passbook/server/pkg/grpc_errors"
+	"github.com/22Fariz22/passbook/server/pkg/grpcerrors"
 	"github.com/22Fariz22/passbook/server/pkg/logger"
 	"github.com/go-redis/redis/v8"
 	"time"
@@ -28,7 +28,7 @@ func (r *userRedisRepo) GetByIDCtx(ctx context.Context, key string) (*entity.Use
 	userBytes, err := r.redisClient.Get(ctx, r.createKey(key)).Bytes()
 	if err != nil {
 		if err != redis.Nil {
-			return nil, grpc_errors.ErrNotFound
+			return nil, grpcerrors.ErrNotFound
 		}
 		return nil, err
 	}

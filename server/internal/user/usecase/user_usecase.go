@@ -2,15 +2,16 @@ package usecase
 
 import (
 	"context"
+	"log"
+
 	"github.com/22Fariz22/passbook/server/internal/entity"
 	"github.com/22Fariz22/passbook/server/internal/user"
-	"github.com/22Fariz22/passbook/server/pkg/grpc_errors"
+	"github.com/22Fariz22/passbook/server/pkg/grpcerrors"
 	"github.com/22Fariz22/passbook/server/pkg/logger"
 	userService "github.com/22Fariz22/passbook/server/proto"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
-	"log"
 )
 
 const (
@@ -25,7 +26,9 @@ type userUseCase struct {
 }
 
 // NewUserUseCase New User UseCase
-func NewUserUseCase(logger logger.Logger, userRepo user.UserPGRepository, redisRepo user.UserRedisRepository) *userUseCase {
+func NewUserUseCase(
+	logger logger.Logger, userRepo user.UserPGRepository, redisRepo user.UserRedisRepository,
+) *userUseCase {
 	return &userUseCase{logger: logger, userPgRepo: userRepo, redisRepo: redisRepo}
 }
 
@@ -33,7 +36,7 @@ func NewUserUseCase(logger logger.Logger, userRepo user.UserPGRepository, redisR
 func (u *userUseCase) Register(ctx context.Context, user *entity.User) (*entity.User, error) {
 	existsUser, err := u.userPgRepo.FindByLogin(ctx, user.Login)
 	if existsUser != nil || err == nil {
-		return nil, grpc_errors.ErrEmailExists
+		return nil, grpcerrors.ErrEmailExists
 	}
 
 	return u.userPgRepo.Create(ctx, user)

@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/22Fariz22/passbook/server/config"
-	_ "github.com/jackc/pgx/stdlib"
 	"github.com/jmoiron/sqlx"
 )
 

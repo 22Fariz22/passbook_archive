@@ -1,4 +1,4 @@
-package grpc_errors
+package grpcerrors
 
 import (
 	"context"
@@ -48,7 +48,7 @@ func ParseGRPCErrStatusCode(err error) codes.Code {
 }
 
 // MapGRPCErrCodeToHttpStatus Map GRPC errors codes to http status
-func MapGRPCErrCodeToHttpStatus(code codes.Code) int {
+func MapGRPCErrCodeToHTTPStatus(code codes.Code) int {
 	switch code {
 	case codes.Unauthenticated:
 		return http.StatusUnauthorized

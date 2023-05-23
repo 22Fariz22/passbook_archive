@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/22Fariz22/passbook/server/internal/entity"
-	"github.com/22Fariz22/passbook/server/pkg/grpc_errors"
+	"github.com/22Fariz22/passbook/server/pkg/grpcerrors"
 	"github.com/22Fariz22/passbook/server/pkg/utils"
 	userService "github.com/22Fariz22/passbook/server/proto"
 	"github.com/go-redis/redis/v8"
@@ -21,18 +21,18 @@ func (u *usersService) Register(ctx context.Context, r *userService.RegisterRequ
 	user, err := u.registerReqToUserModel(r)
 	if err != nil {
 		u.logger.Errorf("registerReqToUserModel: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "registerReqToUserModel: %v", err)
+		return nil, status.Errorf(grpcerrors.ParseGRPCErrStatusCode(err), "registerReqToUserModel: %v", err)
 	}
 
 	if err := utils.ValidateStruct(ctx, user); err != nil {
 		u.logger.Errorf("ValidateStruct: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "ValidateStruct: %v", err)
+		return nil, status.Errorf(grpcerrors.ParseGRPCErrStatusCode(err), "ValidateStruct: %v", err)
 	}
 
 	createdUser, err := u.userUC.Register(ctx, user)
 	if err != nil {
 		u.logger.Errorf("userUC.Register: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "Register: %v", err)
+		return nil, status.Errorf(grpcerrors.ParseGRPCErrStatusCode(err), "Register: %v", err)
 	}
 
 	return &userService.RegisterResponse{User: u.userModelToProto(createdUser)}, nil
@@ -45,7 +45,7 @@ func (u *usersService) Login(ctx context.Context, r *userService.LoginRequest) (
 	user, err := u.userUC.Login(ctx, login, r.GetPassword())
 	if err != nil {
 		u.logger.Errorf("userUC.Login: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "Login: %v", err)
+		return nil, status.Errorf(grpcerrors.ParseGRPCErrStatusCode(err), "Login: %v", err)
 	}
 
 	session, err := u.sessUC.CreateSession(ctx, &entity.Session{
@@ -53,7 +53,7 @@ func (u *usersService) Login(ctx context.Context, r *userService.LoginRequest) (
 	}, u.cfg.Session.Expire)
 	if err != nil {
 		u.logger.Errorf("sessUC.CreateSession: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.CreateSession: %v", err)
+		return nil, status.Errorf(grpcerrors.ParseGRPCErrStatusCode(err), "sessUC.CreateSession: %v", err)
 	}
 
 	return &userService.LoginResponse{User: u.userModelToProto(user), SessionId: session}, err
@@ -66,7 +66,7 @@ func (u *usersService) FindByLogin(ctx context.Context, r *userService.FindByLog
 	user, err := u.userUC.FindByLogin(ctx, login)
 	if err != nil {
 		u.logger.Errorf("userUC.FindByLogin: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "userUC.FindByLogin: %v", err)
+		return nil, status.Errorf(grpcerrors.ParseGRPCErrStatusCode(err), "userUC.FindByLogin: %v", err)
 	}
 
 	return &userService.FindByLoginResponse{User: u.userModelToProto(user)}, err
@@ -77,13 +77,13 @@ func (u *usersService) FindByID(ctx context.Context, r *userService.FindByIDRequ
 	userUUID, err := uuid.Parse(r.GetUuid())
 	if err != nil {
 		u.logger.Errorf("uuid.Parse: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "uuid.Parse: %v", err)
+		return nil, status.Errorf(grpcerrors.ParseGRPCErrStatusCode(err), "uuid.Parse: %v", err)
 	}
 
 	user, err := u.userUC.FindByID(ctx, userUUID)
 	if err != nil {
 		u.logger.Errorf("userUC.FindByID: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "userUC.FindByID: %v", err)
+		return nil, status.Errorf(grpcerrors.ParseGRPCErrStatusCode(err), "userUC.FindByID: %v", err)
 	}
 
 	return &userService.FindByIDResponse{User: u.userModelToProto(user)}, nil
@@ -94,22 +94,22 @@ func (u *usersService) GetMe(ctx context.Context, r *userService.GetMeRequest) (
 	sessID, err := u.getSessionIDFromCtx(ctx)
 	if err != nil {
 		u.logger.Errorf("getSessionIDFromCtx: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.getSessionIDFromCtx: %v", err)
+		return nil, status.Errorf(grpcerrors.ParseGRPCErrStatusCode(err), "sessUC.getSessionIDFromCtx: %v", err)
 	}
 
 	session, err := u.sessUC.GetSessionByID(ctx, sessID)
 	if err != nil {
 		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
 		if errors.Is(err, redis.Nil) {
-			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
+			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpcerrors.ErrNotFound)
 		}
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
+		return nil, status.Errorf(grpcerrors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
 	}
 
 	user, err := u.userUC.FindByID(ctx, session.UserID)
 	if err != nil {
 		u.logger.Errorf("userUC.FindByID: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "userUC.FindByID: %v", err)
+		return nil, status.Errorf(grpcerrors.ParseGRPCErrStatusCode(err), "userUC.FindByID: %v", err)
 	}
 
 	return &userService.GetMeResponse{User: u.userModelToProto(user)}, nil
@@ -125,7 +125,7 @@ func (u *usersService) Logout(ctx context.Context, request *userService.LogoutRe
 	if err := u.sessUC.DeleteByID(ctx, sessID); err != nil {
 		log.Println("here err u.sessUC.DeleteByID.")
 		u.logger.Errorf("sessUC.DeleteByID: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.DeleteByID: %v", err)
+		return nil, status.Errorf(grpcerrors.ParseGRPCErrStatusCode(err), "sessUC.DeleteByID: %v", err)
 	}
 
 	return &userService.LogoutResponse{}, nil
@@ -258,12 +258,12 @@ func (u *usersService) userModelToProto(user *entity.User) *userService.User {
 func (u *usersService) getSessionIDFromCtx(ctx context.Context) (string, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
-		return "", status.Errorf(codes.Unauthenticated, "metadata.FromIncomingContext: %v", grpc_errors.ErrNoCtxMetaData)
+		return "", status.Errorf(codes.Unauthenticated, "metadata.FromIncomingContext: %v", grpcerrors.ErrNoCtxMetaData)
 	}
 
 	sessionID := md.Get("session_id")
 	if sessionID[0] == "" {
-		return "", status.Errorf(codes.PermissionDenied, "md.Get sessionId: %v", grpc_errors.ErrInvalidSessionID)
+		return "", status.Errorf(codes.PermissionDenied, "md.Get sessionId: %v", grpcerrors.ErrInvalidSessionID)
 	}
 
 	return sessionID[0], nil
@@ -280,9 +280,9 @@ func checkSessionAndGetUserID(ctx context.Context, u *usersService) (*entity.Ses
 	if err != nil {
 		u.logger.Errorf("sessUC.GetSessionByID: %v", err)
 		if errors.Is(err, redis.Nil) {
-			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpc_errors.ErrNotFound)
+			return nil, status.Errorf(codes.NotFound, "sessUC.GetSessionByID: %v", grpcerrors.ErrNotFound)
 		}
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
+		return nil, status.Errorf(grpcerrors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
 	}
 	return session, nil
 }
