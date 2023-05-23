@@ -19,5 +19,4 @@ var addCardCmd = &cobra.Command{
 		if err != nil {
 			return
 		}
-		return
 	}}

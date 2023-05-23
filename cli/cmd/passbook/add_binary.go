@@ -22,5 +22,4 @@ func addBinaryCmdRun(cmd *cobra.Command, args []string) {
 	if err != nil {
 		return
 	}
-	return
 }

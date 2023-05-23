@@ -19,5 +19,4 @@ var addAccountCmd = &cobra.Command{
 		if err != nil {
 			return
 		}
-		return
 	}}

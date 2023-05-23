@@ -20,6 +20,5 @@ var loginCmd = &cobra.Command{
 			Login:    login,
 			Password: password,
 		})
-		return
 	},
 }

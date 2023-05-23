@@ -22,6 +22,5 @@ var getMeCmd = &cobra.Command{
 		}
 		fmt.Println("ID:", user.User.Uuid)
 		fmt.Println("Login:", user.User.Login)
-		return
 	},
 }

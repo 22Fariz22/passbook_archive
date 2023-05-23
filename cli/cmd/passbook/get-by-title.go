@@ -27,5 +27,4 @@ var getByTitleCmd = &cobra.Command{
 		for _, v := range res.Data {
 			fmt.Println(v)
 		}
-		return
 	}}

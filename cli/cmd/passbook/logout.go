@@ -20,6 +20,5 @@ var logoutCmd = &cobra.Command{
 			log.Fatal(err)
 			return
 		}
-		return
 	},
 }

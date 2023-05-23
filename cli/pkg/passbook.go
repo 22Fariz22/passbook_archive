@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -176,7 +175,7 @@ func GetFullList(c pb.UserServiceClient, input *pb.GetFullListRequest) (*pb.GetF
 
 // GetSessionAndPutInMD читает файл session_id, ищет сессию ,вставляет session_id в метаданные и возвращает context
 func GetSessionAndPutInMD() (context.Context, error) {
-	data, err := ioutil.ReadFile("session.txt")
+	data, err := os.ReadFile("session.txt")
 	if err != nil {
 		log.Println("err in ioutil.ReadFile:", err)
 		return nil, err
