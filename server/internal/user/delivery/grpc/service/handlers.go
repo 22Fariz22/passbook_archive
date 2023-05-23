@@ -263,7 +263,7 @@ func (u *usersService) getSessionIDFromCtx(ctx context.Context) (string, error) 
 
 	sessionID := md.Get("session_id")
 	if sessionID[0] == "" {
-		return "", status.Errorf(codes.PermissionDenied, "md.Get sessionId: %v", grpc_errors.ErrInvalidSessionId)
+		return "", status.Errorf(codes.PermissionDenied, "md.Get sessionId: %v", grpc_errors.ErrInvalidSessionID)
 	}
 
 	return sessionID[0], nil
