@@ -29,13 +29,13 @@ func Execute(cmd *cobra.Command) error {
 
 	//addTextCmd сохряняет произвольные текстовые данные
 	RootCmd.AddCommand(addTextCmd)
-	addTextCmd.Flags().StringVarP(&AddTextRequest.Title, "title", "t", "", "add title")
-	addTextCmd.Flags().StringVarP(&AddTextRequest.Data, "data", "d", "", "add text")
+	addTextCmd.Flags().StringVarP(&addTextRequest.Title, "title", "t", "", "add title")
+	addTextCmd.Flags().StringVarP(&addTextRequest.Data, "data", "d", "", "add text")
 	addTextCmd.MarkFlagRequired("data")
 
 	//addBinaryCmd сохряняет произвольные бинарные данные
 	RootCmd.AddCommand(addBinaryCmd)
-	addBinaryCmd.Flags().StringVarP(&AddBinaryRequest.Title, "title", "t", "", "add title")
+	addBinaryCmd.Flags().StringVarP(&addBinaryRequest.Title, "title", "t", "", "add title")
 	//addBinaryCmd.Flags().StringVarP(&AddBinaryRequest.Data, "data", "d", "", "add  text")
 	addBinaryCmd.MarkFlagRequired("data")
 

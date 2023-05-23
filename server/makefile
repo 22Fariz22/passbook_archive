@@ -22,3 +22,9 @@ migrate_up:
 migrate_down:
 	migrate -path migrations/ -database "postgresql://postgres:55555@localhost:5432/passbook?sslmode=disable" -verbose down
 
+generate:
+	mockgen -source redis_repository.go -destination mock/redis_repository.go -package mock
+	mockgen -source usecase.go -destination mock/usecase.go -package mock
+	mockgen -source pg-repository.go -destination mock/pg_repository.go -package mock
+	mockgen -source redis-repository.go -destination mock/redis_repository.go -package mock
+	mockgen -source usecase.go -destination mock/usecase.go -package mock

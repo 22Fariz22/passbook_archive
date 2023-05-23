@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var AddTextRequest pb.AddTextRequest
+var addTextRequest pb.AddTextRequest
 
 var addTextCmd = &cobra.Command{
 	Use:     "text",
@@ -18,7 +18,7 @@ var addTextCmd = &cobra.Command{
 func addTextCmdRun(cmd *cobra.Command, args []string) {
 	c := pkg.ConnGRPCServer()
 
-	err := pkg.AddText(c, &AddTextRequest)
+	err := pkg.AddText(c, &addTextRequest)
 	if err != nil {
 		return
 	}

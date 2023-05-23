@@ -1,4 +1,3 @@
-//go:generate mockgen -source usecase.go -destination mock/usecase.go -package mock
 package user
 
 import (
@@ -9,12 +8,12 @@ import (
 	"github.com/google/uuid"
 )
 
-// User UseCase interface
+// UserUseCase User UseCase interface
 type UserUseCase interface {
 	Register(ctx context.Context, user *entity.User) (*entity.User, error)
 	Login(ctx context.Context, email string, password string) (*entity.User, error)
 	FindByLogin(ctx context.Context, login string) (*entity.User, error)
-	FindById(ctx context.Context, userID uuid.UUID) (*entity.User, error)
+	FindByID(ctx context.Context, userID uuid.UUID) (*entity.User, error)
 
 	AddAccount(ctx context.Context, userID string, request *userService.AddAccountRequest) error
 	AddText(ctx context.Context, userID string, request *userService.AddTextRequest) error

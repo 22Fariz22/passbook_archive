@@ -16,7 +16,7 @@ type usersService struct {
 	sessUC session.SessionUseCase
 }
 
-// Auth service constructor
+// NewAuthServerGRPC Auth service constructor
 func NewAuthServerGRPC(logger logger.Logger, cfg *config.Config, userUC user.UserUseCase, sessUC session.SessionUseCase) *usersService {
 	return &usersService{
 		UnimplementedUserServiceServer: pb.UnimplementedUserServiceServer{},

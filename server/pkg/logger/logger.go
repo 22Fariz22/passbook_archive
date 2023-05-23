@@ -30,7 +30,7 @@ type apiLogger struct {
 	sugarLogger *zap.SugaredLogger
 }
 
-// App Logger constructor
+// NewAPILogger App Logger constructor
 func NewAPILogger(cfg *config.Config) *apiLogger {
 	return &apiLogger{cfg: cfg}
 }
@@ -55,7 +55,7 @@ func (l *apiLogger) getLoggerLevel(cfg *config.Config) zapcore.Level {
 	return level
 }
 
-// Init logger
+// InitLogger Init logger
 func (l *apiLogger) InitLogger() {
 	logLevel := l.getLoggerLevel(l.cfg)
 
@@ -91,60 +91,72 @@ func (l *apiLogger) InitLogger() {
 	}
 }
 
-// Logger methods
-
+// Debug method
 func (l *apiLogger) Debug(args ...interface{}) {
 	l.sugarLogger.Debug(args...)
 }
 
+// Debugf method
 func (l *apiLogger) Debugf(template string, args ...interface{}) {
 	l.sugarLogger.Debugf(template, args...)
 }
 
+// Info method
 func (l *apiLogger) Info(args ...interface{}) {
 	l.sugarLogger.Info(args...)
 }
 
+// Infof method
 func (l *apiLogger) Infof(template string, args ...interface{}) {
 	l.sugarLogger.Infof(template, args...)
 }
 
+// Warn method
 func (l *apiLogger) Warn(args ...interface{}) {
 	l.sugarLogger.Warn(args...)
 }
 
+// Warnf method
 func (l *apiLogger) Warnf(template string, args ...interface{}) {
 	l.sugarLogger.Warnf(template, args...)
 }
 
+// Error method
 func (l *apiLogger) Error(args ...interface{}) {
 	l.sugarLogger.Error(args...)
 }
 
+// Errorf method
 func (l *apiLogger) Errorf(template string, args ...interface{}) {
 	l.sugarLogger.Errorf(template, args...)
 }
 
+// DPanic method
 func (l *apiLogger) DPanic(args ...interface{}) {
 	l.sugarLogger.DPanic(args...)
 }
 
+// DPanicf method
 func (l *apiLogger) DPanicf(template string, args ...interface{}) {
 	l.sugarLogger.DPanicf(template, args...)
 }
 
+// Panic method
 func (l *apiLogger) Panic(args ...interface{}) {
 	l.sugarLogger.Panic(args...)
 }
 
+// Panicf method
 func (l *apiLogger) Panicf(template string, args ...interface{}) {
 	l.sugarLogger.Panicf(template, args...)
 }
 
+// Fatal method
 func (l *apiLogger) Fatal(args ...interface{}) {
 	l.sugarLogger.Fatal(args...)
 }
 
+// Fatalf method
 func (l *apiLogger) Fatalf(template string, args ...interface{}) {
 	l.sugarLogger.Fatalf(template, args...)
 }

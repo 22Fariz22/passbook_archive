@@ -18,12 +18,12 @@ type userRedisRepo struct {
 	logger      logger.Logger
 }
 
-// Auth redis repository constructor
+// NewUserRedisRepo Auth redis repository constructor
 func NewUserRedisRepo(redisClient *redis.Client, logger logger.Logger) *userRedisRepo {
 	return &userRedisRepo{redisClient: redisClient, basePrefix: "user:", logger: logger}
 }
 
-// Get user by id
+// GetByIDCtx Get user by id
 func (r *userRedisRepo) GetByIDCtx(ctx context.Context, key string) (*entity.User, error) {
 	userBytes, err := r.redisClient.Get(ctx, r.createKey(key)).Bytes()
 	if err != nil {
@@ -40,7 +40,7 @@ func (r *userRedisRepo) GetByIDCtx(ctx context.Context, key string) (*entity.Use
 	return user, nil
 }
 
-// Cache user with duration in seconds
+// SetUserCtx Cache user with duration in seconds
 func (r *userRedisRepo) SetUserCtx(ctx context.Context, key string, seconds int, user *entity.User) error {
 	userBytes, err := json.Marshal(user)
 	if err != nil {
@@ -50,7 +50,7 @@ func (r *userRedisRepo) SetUserCtx(ctx context.Context, key string, seconds int,
 	return r.redisClient.Set(ctx, r.createKey(key), userBytes, time.Second*time.Duration(seconds)).Err()
 }
 
-// Delete user by key
+// DeleteUserCtx Delete user by key
 func (r *userRedisRepo) DeleteUserCtx(ctx context.Context, key string) error {
 	return r.redisClient.Del(ctx, r.createKey(key)).Err()
 }

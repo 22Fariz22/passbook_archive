@@ -64,6 +64,7 @@ func Logout(c pb.UserServiceClient, input *pb.LogoutRequest) error {
 	return nil
 }
 
+// GetMe посмотреть свою сессию
 func GetMe(c pb.UserServiceClient, input *pb.GetMeRequest) (*pb.GetMeResponse, error) {
 	ctx, err := GetSessionAndPutInMD()
 	if err != nil {
@@ -78,7 +79,7 @@ func GetMe(c pb.UserServiceClient, input *pb.GetMeRequest) (*pb.GetMeResponse, e
 	return user, nil
 }
 
-// AddAccount вызов rpc AddAccount -> добавить в хранилище сведдения об аккаунте
+// AddAccount  сохранить данные аккаунта
 func AddAccount(c pb.UserServiceClient, input *pb.AddAccountRequest) error {
 	ctx, err := GetSessionAndPutInMD()
 	if err != nil {
@@ -110,7 +111,7 @@ func AddText(c pb.UserServiceClient, input *pb.AddTextRequest) error {
 	return nil
 }
 
-// AddText add text data
+// AddBinary add text data
 func AddBinary(c pb.UserServiceClient, input *pb.AddBinaryRequest) error {
 	ctx, err := GetSessionAndPutInMD()
 	if err != nil {

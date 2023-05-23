@@ -12,12 +12,12 @@ type User struct {
 	Password string    `json:"password" db:"password"`
 }
 
-// Sanitize password
+// SanitizePassword Sanitize password
 func (u *User) SanitizePassword() {
 	u.Password = ""
 }
 
-// Hash user password with bcrypt
+// HashPassword Hash user password with bcrypt
 func (u *User) HashPassword() error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -27,12 +27,12 @@ func (u *User) HashPassword() error {
 	return nil
 }
 
-// Compare user password and payload
+// ComparePasswords Compare user password and payload
 func (u *User) ComparePasswords(password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 }
 
-// Prepare user for register
+// PrepareCreate Prepare user for register
 func (u *User) PrepareCreate() error {
 	if err := u.HashPassword(); err != nil {
 		return err
@@ -40,7 +40,7 @@ func (u *User) PrepareCreate() error {
 	return nil
 }
 
-// Account
+// Account entity of account data
 type Account struct {
 	UserID   string `json:"user_id" db:"user_id"`
 	Title    string `json:"title" db:"title" validate:"required,lte=30"`
@@ -50,21 +50,21 @@ type Account struct {
 	//UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
 
-// Text
+// Text entity of text data
 type Text struct {
 	UserID string `json:"user_id" db:"user_id" `
 	Title  string `json:"title" db:"title" validate:"required,lte=30"`
 	Data   []byte `json:"data" db:"data" validate:"omitempty"`
 }
 
-// Binary
+// Binary entity of binary data
 type Binary struct {
 	UserID string `json:"user_id" db:"user_id"`
 	Title  string `json:"title" db:"title" validate:"required,lte=30"`
 	Data   []byte `json:"data" db:"data" validate:"omitempty"`
 }
 
-// Card
+// Card entity of card data
 type Card struct {
 	UserID     string `json:"user_id" db:"user_id"`
 	Title      string `json:"title" db:"title" validate:"required,lte=30"`

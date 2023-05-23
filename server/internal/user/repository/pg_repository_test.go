@@ -109,7 +109,7 @@ func TestUserRepository_FindById(t *testing.T) {
 
 	mock.ExpectQuery(findByIDQuery).WithArgs(mockUser.UserID).WillReturnRows(rows)
 
-	foundUser, err := userPGRepository.FindById(context.Background(), mockUser.UserID)
+	foundUser, err := userPGRepository.FindByID(context.Background(), mockUser.UserID)
 	require.NoError(t, err)
 	require.NotNil(t, foundUser)
 	require.Equal(t, foundUser.UserID, mockUser.UserID)

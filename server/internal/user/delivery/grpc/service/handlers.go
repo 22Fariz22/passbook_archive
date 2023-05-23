@@ -59,7 +59,7 @@ func (u *usersService) Login(ctx context.Context, r *userService.LoginRequest) (
 	return &userService.LoginResponse{User: u.userModelToProto(user), SessionId: session}, err
 }
 
-// Find user by login
+// FindByLogin Find user by login
 func (u *usersService) FindByLogin(ctx context.Context, r *userService.FindByLoginRequest) (*userService.FindByLoginResponse, error) {
 	login := r.GetLogin()
 
@@ -72,7 +72,7 @@ func (u *usersService) FindByLogin(ctx context.Context, r *userService.FindByLog
 	return &userService.FindByLoginResponse{User: u.userModelToProto(user)}, err
 }
 
-// Find user by uuid
+// FindByID Find user by uuid
 func (u *usersService) FindByID(ctx context.Context, r *userService.FindByIDRequest) (*userService.FindByIDResponse, error) {
 	userUUID, err := uuid.Parse(r.GetUuid())
 	if err != nil {
@@ -80,16 +80,16 @@ func (u *usersService) FindByID(ctx context.Context, r *userService.FindByIDRequ
 		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "uuid.Parse: %v", err)
 	}
 
-	user, err := u.userUC.FindById(ctx, userUUID)
+	user, err := u.userUC.FindByID(ctx, userUUID)
 	if err != nil {
-		u.logger.Errorf("userUC.FindById: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "userUC.FindById: %v", err)
+		u.logger.Errorf("userUC.FindByID: %v", err)
+		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "userUC.FindByID: %v", err)
 	}
 
 	return &userService.FindByIDResponse{User: u.userModelToProto(user)}, nil
 }
 
-// Get session id from, ctx metadata, find user by uuid and returns it
+// GetMe Get session id from, ctx metadata, find user by uuid and returns it
 func (u *usersService) GetMe(ctx context.Context, r *userService.GetMeRequest) (*userService.GetMeResponse, error) {
 	sessID, err := u.getSessionIDFromCtx(ctx)
 	if err != nil {
@@ -106,10 +106,10 @@ func (u *usersService) GetMe(ctx context.Context, r *userService.GetMeRequest) (
 		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "sessUC.GetSessionByID: %v", err)
 	}
 
-	user, err := u.userUC.FindById(ctx, session.UserID)
+	user, err := u.userUC.FindByID(ctx, session.UserID)
 	if err != nil {
-		u.logger.Errorf("userUC.FindById: %v", err)
-		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "userUC.FindById: %v", err)
+		u.logger.Errorf("userUC.FindByID: %v", err)
+		return nil, status.Errorf(grpc_errors.ParseGRPCErrStatusCode(err), "userUC.FindByID: %v", err)
 	}
 
 	return &userService.GetMeResponse{User: u.userModelToProto(user)}, nil
@@ -133,7 +133,7 @@ func (u *usersService) Logout(ctx context.Context, request *userService.LogoutRe
 
 // AddAccount save account data
 func (u *usersService) AddAccount(ctx context.Context, request *userService.AddAccountRequest) (*userService.AddAccountResponse, error) {
-	session, err := checkSessionAndGetUserID(u, ctx)
+	session, err := checkSessionAndGetUserID(ctx, u)
 	if err != nil {
 		return nil, err
 	}
@@ -151,7 +151,7 @@ func (u *usersService) AddAccount(ctx context.Context, request *userService.AddA
 
 // AddText save text data
 func (u *usersService) AddText(ctx context.Context, request *userService.AddTextRequest) (*userService.AddTextResponse, error) {
-	session, err := checkSessionAndGetUserID(u, ctx)
+	session, err := checkSessionAndGetUserID(ctx, u)
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +169,7 @@ func (u *usersService) AddText(ctx context.Context, request *userService.AddText
 
 // AddBinary save binary data
 func (u *usersService) AddBinary(ctx context.Context, request *userService.AddBinaryRequest) (*userService.AddBinaryResponse, error) {
-	session, err := checkSessionAndGetUserID(u, ctx)
+	session, err := checkSessionAndGetUserID(ctx, u)
 	if err != nil {
 		return nil, err
 	}
@@ -187,7 +187,7 @@ func (u *usersService) AddBinary(ctx context.Context, request *userService.AddBi
 
 // AddCard save to card data
 func (u *usersService) AddCard(ctx context.Context, request *userService.AddCardRequest) (*userService.AddCardResponse, error) {
-	session, err := checkSessionAndGetUserID(u, ctx)
+	session, err := checkSessionAndGetUserID(ctx, u)
 	if err != nil {
 		return nil, err
 	}
@@ -205,7 +205,7 @@ func (u *usersService) AddCard(ctx context.Context, request *userService.AddCard
 
 // GetByTitle get user's data by title
 func (u *usersService) GetByTitle(ctx context.Context, request *userService.GetByTitleRequest) (*userService.GetByTitleResponse, error) {
-	session, err := checkSessionAndGetUserID(u, ctx)
+	session, err := checkSessionAndGetUserID(ctx, u)
 	if err != nil {
 		return nil, err
 	}
@@ -220,7 +220,7 @@ func (u *usersService) GetByTitle(ctx context.Context, request *userService.GetB
 
 // GetFullList get all user's data
 func (u *usersService) GetFullList(ctx context.Context, request *userService.GetFullListRequest) (*userService.GetFullListResponse, error) {
-	session, err := checkSessionAndGetUserID(u, ctx)
+	session, err := checkSessionAndGetUserID(ctx, u)
 	if err != nil {
 		return nil, err
 	}
@@ -269,7 +269,7 @@ func (u *usersService) getSessionIDFromCtx(ctx context.Context) (string, error) 
 	return sessionID[0], nil
 }
 
-func checkSessionAndGetUserID(u *usersService, ctx context.Context) (*entity.Session, error) {
+func checkSessionAndGetUserID(ctx context.Context, u *usersService) (*entity.Session, error) {
 	sessID, err := u.getSessionIDFromCtx(ctx)
 	if err != nil {
 		u.logger.Errorf("getSessionIDFromCtx: %v", err)

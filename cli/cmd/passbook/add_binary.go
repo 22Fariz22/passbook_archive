@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var AddBinaryRequest pb.AddBinaryRequest
+var addBinaryRequest pb.AddBinaryRequest
 
 var addBinaryCmd = &cobra.Command{
 	Use:     "Binary",
@@ -18,7 +18,7 @@ var addBinaryCmd = &cobra.Command{
 func addBinaryCmdRun(cmd *cobra.Command, args []string) {
 	c := pkg.ConnGRPCServer()
 
-	err := pkg.AddBinary(c, &AddBinaryRequest)
+	err := pkg.AddBinary(c, &addBinaryRequest)
 	if err != nil {
 		return
 	}

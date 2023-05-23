@@ -2,10 +2,11 @@ package postgres
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/22Fariz22/passbook/server/config"
 	_ "github.com/jackc/pgx/stdlib"
 	"github.com/jmoiron/sqlx"
-	"time"
 )
 
 const (
@@ -15,7 +16,7 @@ const (
 	connMaxIdleTime = 20
 )
 
-// Return new Postgresql db instance
+// NewPsqlDB Return new Postgresql db instance
 func NewPsqlDB(c *config.Config) (*sqlx.DB, error) {
 	dataSourceName := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
 		c.Postgres.PostgresqlHost,
