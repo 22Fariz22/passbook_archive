@@ -6,8 +6,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var loginReq pb.LoginRequest
-var loginResp pb.LoginResponse
+var login string
+var password string
 
 var loginCmd = &cobra.Command{
 	Use:     "login",
@@ -20,14 +20,6 @@ var loginCmd = &cobra.Command{
 			Login:    login,
 			Password: password,
 		})
+		return
 	},
 }
-
-var login string
-var password string
-
-//func init() {
-//	RootCmd.AddCommand(loginCmd)
-//	loginCmd.Flags().StringVarP(&login, "login", "l", "", "it is string to reverse")
-//	loginCmd.Flags().StringVarP(&password, "password", "p", "", "it is string to reverse")
-//}

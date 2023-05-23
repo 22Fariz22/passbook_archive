@@ -1,7 +1,6 @@
 package passbook
 
 import (
-	"fmt"
 	"github.com/22Fariz22/passbook/cli/pkg"
 	pb "github.com/22Fariz22/passbook/server/proto"
 	"github.com/spf13/cobra"
@@ -23,5 +22,5 @@ func addTextCmdRun(cmd *cobra.Command, args []string) {
 	if err != nil {
 		return
 	}
-	fmt.Println("text added")
+	return
 }

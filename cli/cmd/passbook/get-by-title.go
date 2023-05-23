@@ -27,10 +27,5 @@ var getByTitleCmd = &cobra.Command{
 		for _, v := range res.Data {
 			fmt.Println(v)
 		}
+		return
 	}}
-
-//func init() {
-//	RootCmd.AddCommand(getByTitleCmd)
-//	getByTitleCmd.Flags().StringVarP(&getByTitleRequest.Title, "title", "t", "", "get your secret by title")
-//	getByTitleCmd.MarkFlagRequired("title")
-//}

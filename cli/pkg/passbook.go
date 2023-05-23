@@ -16,10 +16,10 @@ import (
 func Register(c pb.UserServiceClient, input *pb.RegisterRequest) error {
 	_, err := c.Register(context.Background(), input)
 	if err != nil {
-		log.Fatal("err", err)
+		fmt.Println("failed to register")
 		return err
 	}
-
+	fmt.Println("register is successful")
 	return nil
 }
 
@@ -27,14 +27,14 @@ func Register(c pb.UserServiceClient, input *pb.RegisterRequest) error {
 func Login(c pb.UserServiceClient, input *pb.LoginRequest) error {
 	resp, err := c.Login(context.Background(), input)
 	if err != nil {
-		log.Fatal("err", err)
+		fmt.Println("failed to login")
 		return err
 	}
 
 	//пишем в файл session_id
 	f, err := os.Create("session.txt")
 	if err != nil {
-		log.Println(err)
+		fmt.Println("failed to login")
 		return err
 	}
 	_, err = f.WriteString(resp.SessionId)
@@ -45,7 +45,6 @@ func Login(c pb.UserServiceClient, input *pb.LoginRequest) error {
 	}
 
 	fmt.Println("login successfully")
-
 	return nil
 }
 
@@ -53,15 +52,16 @@ func Login(c pb.UserServiceClient, input *pb.LoginRequest) error {
 func Logout(c pb.UserServiceClient, input *pb.LogoutRequest) error {
 	ctx, err := GetSessionAndPutInMD()
 	if err != nil {
+		fmt.Println("failed to logout")
 		return err
 	}
 
 	_, err = c.Logout(ctx, &pb.LogoutRequest{})
 	if err != nil {
-		log.Fatal("err in c.Logout", err)
+		fmt.Println("failed to logout")
 		return err
 	}
-
+	fmt.Println("logout is successful")
 	return nil
 }
 
@@ -88,9 +88,10 @@ func AddAccount(c pb.UserServiceClient, input *pb.AddAccountRequest) error {
 
 	_, err = c.AddAccount(ctx, input)
 	if err != nil {
-		//add err
+		fmt.Println("failed to add account")
+		return err
 	}
-
+	fmt.Println("account added")
 	return nil
 }
 
@@ -103,9 +104,26 @@ func AddText(c pb.UserServiceClient, input *pb.AddTextRequest) error {
 
 	_, err = c.AddText(ctx, input)
 	if err != nil {
-		//add err
+		fmt.Println("failed to add text")
+		return err
+	}
+	fmt.Println("text added")
+	return nil
+}
+
+// AddText add text data
+func AddBinary(c pb.UserServiceClient, input *pb.AddBinaryRequest) error {
+	ctx, err := GetSessionAndPutInMD()
+	if err != nil {
+		return err
 	}
 
+	_, err = c.AddBinary(ctx, input)
+	if err != nil {
+		fmt.Println("failed to add binary")
+		return err
+	}
+	fmt.Println("binary added")
 	return nil
 }
 
@@ -118,9 +136,11 @@ func AddCard(c pb.UserServiceClient, input *pb.AddCardRequest) error {
 
 	_, err = c.AddCard(ctx, input)
 	if err != nil {
-		//add err
+		fmt.Println("failed to add card")
+		return err
 	}
 
+	fmt.Println("card added")
 	return nil
 }
 

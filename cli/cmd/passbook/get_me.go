@@ -18,12 +18,10 @@ var getMeCmd = &cobra.Command{
 		user, err := pkg.GetMe(c, &pb.GetMeRequest{})
 		if err != nil {
 			log.Println("you don't have a session")
+			return
 		}
 		fmt.Println("ID:", user.User.Uuid)
 		fmt.Println("Login:", user.User.Login)
+		return
 	},
 }
-
-//func init() {
-//	RootCmd.AddCommand(getMeCmd)
-//}

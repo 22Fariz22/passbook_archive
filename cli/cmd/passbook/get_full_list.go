@@ -26,8 +26,5 @@ var getFullListCmd = &cobra.Command{
 		for _, v := range res.Data {
 			fmt.Println(v)
 		}
+		return
 	}}
-
-//func init() {
-//	RootCmd.AddCommand(getFullListCmd)
-//}

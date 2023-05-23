@@ -140,10 +140,13 @@ func (u *usersService) AddAccount(ctx context.Context, request *userService.AddA
 
 	err = u.userUC.AddAccount(ctx, session.UserID.String(), request)
 	if err != nil {
-		return nil, err
+		return &userService.AddAccountResponse{}, err
+	}
+	if request.Login == "" || request.Password == "" {
+		return &userService.AddAccountResponse{}, errors.New("failed to add, because your account is empty")
 	}
 
-	return nil, nil
+	return &userService.AddAccountResponse{}, nil
 }
 
 // AddText save text data
@@ -155,10 +158,13 @@ func (u *usersService) AddText(ctx context.Context, request *userService.AddText
 
 	err = u.userUC.AddText(ctx, session.UserID.String(), request)
 	if err != nil {
-		return nil, err
+		return &userService.AddTextResponse{}, err
+	}
+	if request.Data == "" {
+		return &userService.AddTextResponse{}, errors.New("failed to add text, because your data is empty")
 	}
 
-	return nil, nil
+	return &userService.AddTextResponse{}, nil
 }
 
 // AddBinary save binary data
@@ -170,10 +176,13 @@ func (u *usersService) AddBinary(ctx context.Context, request *userService.AddBi
 
 	err = u.userUC.AddBinary(ctx, session.UserID.String(), request)
 	if err != nil {
-		return nil, err
+		return &userService.AddBinaryResponse{}, err
+	}
+	if len(request.Data) == 0 {
+		return &userService.AddBinaryResponse{}, errors.New("failed to add binary, because your data is empty")
 	}
 
-	return nil, nil
+	return &userService.AddBinaryResponse{}, nil
 }
 
 // AddCard save to card data
@@ -185,10 +194,13 @@ func (u *usersService) AddCard(ctx context.Context, request *userService.AddCard
 
 	err = u.userUC.AddCard(ctx, session.UserID.String(), request)
 	if err != nil {
-		return nil, err
+		return &userService.AddCardResponse{}, err
+	}
+	if request.CardNumber == "" || request.CvcCode == "" || request.DateExp == "" {
+		return &userService.AddCardResponse{}, errors.New("failed to add card, because your number ,cvc code or data exp is empty")
 	}
 
-	return nil, nil
+	return &userService.AddCardResponse{}, nil
 }
 
 // GetByTitle get user's data by title
@@ -200,7 +212,7 @@ func (u *usersService) GetByTitle(ctx context.Context, request *userService.GetB
 
 	data, err := u.userUC.GetByTitle(ctx, session.UserID.String(), request)
 	if err != nil {
-		return nil, err
+		return &userService.GetByTitleResponse{}, err
 	}
 
 	return &userService.GetByTitleResponse{Data: data}, err
@@ -215,7 +227,7 @@ func (u *usersService) GetFullList(ctx context.Context, request *userService.Get
 
 	data, err := u.userUC.GetFullList(ctx, session.UserID.String())
 	if err != nil {
-		return nil, err
+		return &userService.GetFullListResponse{}, err
 	}
 
 	return &userService.GetFullListResponse{Data: data}, nil

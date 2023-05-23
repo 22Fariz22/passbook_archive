@@ -19,17 +19,5 @@ var addCardCmd = &cobra.Command{
 		if err != nil {
 			return
 		}
+		return
 	}}
-
-//func init() {
-//	RootCmd.AddCommand(addCardCmd)
-//	addCardCmd.Flags().StringVarP(&addCardRequest.Title, "title", "t", "", "title to save")
-//	addCardCmd.Flags().StringVarP(&addCardRequest.Name, "name", "n", "", "name to save")
-//	addCardCmd.Flags().StringVarP(&addCardRequest.CardNumber, "card", "", "", "card number to save")
-//	addCardCmd.Flags().StringVarP(&addCardRequest.DateExp, "date", "d", "", "date expiration to save")
-//	addCardCmd.Flags().StringVarP(&addCardRequest.CvcCode, "cvc", "", "", "cvc code to save")
-//
-//	addCardCmd.MarkFlagRequired("title")
-//	addCardCmd.MarkFlagRequired("name")
-//	addCardCmd.MarkFlagRequired("card")
-//}
