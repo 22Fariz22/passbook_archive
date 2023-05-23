@@ -8,6 +8,8 @@ import (
 	userService "github.com/22Fariz22/passbook/server/proto"
 )
 
+//go:generate mockgen -source pg-repository.go -destination mock/pg_repository.go -package mock
+
 // UserPGRepository User pg repository
 type UserPGRepository interface {
 	Create(ctx context.Context, user *entity.User) (*entity.User, error)

@@ -8,6 +8,9 @@ import (
 	"github.com/google/uuid"
 )
 
+
+//go:generate mockgen -source usecase.go -destination mock/usecase.go -package mock
+
 // UserUseCase User UseCase interface
 type UserUseCase interface {
 	Register(ctx context.Context, user *entity.User) (*entity.User, error)
