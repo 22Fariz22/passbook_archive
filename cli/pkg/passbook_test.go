@@ -20,40 +20,13 @@ func TestRegister(t *testing.T) {
 
 	client := mock.NewMockUserServiceServer(ctrl) //NewMockUserServiceClient(ctrl)
 
-	type expectation struct {
-		out pb.RegisterResponse
-		err error
+	in := pb.RegisterRequest{
+		Login:    "Leo",
+		Password: "qwerty",
 	}
 
-	//var req pb.RegisterRequest = new(pb.RegisterRequest)
-	//req.Login = "Leo9"
-	//req.Password = "qwer"
+	client.EXPECT().Register(ctx, &in).Return(&pb.RegisterResponse{}, nil)
 
-	tests := map[string]struct {
-		in       pb.RegisterRequest
-		expected expectation
-	}{
-		"Must_Success": {
-			in: pb.RegisterRequest{
-				Login:    "Leo",
-				Password: "qwerty",
-			},
-			expected: expectation{
-				out: pb.RegisterResponse{},
-				err: nil,
-			},
-		},
-	}
-
-	for scenario, tt := range tests {
-		t.Run(scenario, func(t *testing.T) {
-			client.EXPECT().Register(ctx, &tt.in).Return(&pb.RegisterResponse{}, nil)
-
-			_, err := client.Register(ctx, &tt.in)
-			require.NoError(t, err)
-			if err != nil {
-				t.Errorf("Err -> \nWant: %q\nGot: %q\n", tt.expected.err, err)
-			}
-		})
-	}
+	_, err := client.Register(ctx, &in)
+	require.NoError(t, err)
 }
