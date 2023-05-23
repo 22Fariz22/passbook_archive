@@ -25,16 +25,19 @@ func TestRegister(t *testing.T) {
 		err error
 	}
 
-	var req *pb.RegisterRequest = new(pb.RegisterRequest)
-	req.Login = "Leo9"
-	req.Password = "qwer"
+	//var req pb.RegisterRequest = new(pb.RegisterRequest)
+	//req.Login = "Leo9"
+	//req.Password = "qwer"
 
 	tests := map[string]struct {
 		in       pb.RegisterRequest
 		expected expectation
 	}{
 		"Must_Success": {
-			in: *req,
+			in: pb.RegisterRequest{
+				Login:    "Leo",
+				Password: "qwerty",
+			},
 			expected: expectation{
 				out: pb.RegisterResponse{},
 				err: nil,
