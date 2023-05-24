@@ -39,7 +39,7 @@ func Execute(cmd *cobra.Command) error {
 	//addBinaryCmd сохряняет произвольные бинарные данные
 	RootCmd.AddCommand(addBinaryCmd)
 	addBinaryCmd.Flags().StringVarP(&addBinaryRequest.Title, "title", "t", "", "add title")
-	//addBinaryCmd.Flags().StringVarP(&AddBinaryRequest.Data, "data", "d", "", "add  text")
+	addBinaryCmd.Flags().StringVarP(&pathToFile, "path", "p", "", "path to file")
 	addBinaryCmd.MarkFlagRequired("data")
 
 	//addCardCmd сохраняет данные бансковской карты

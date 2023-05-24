@@ -2,11 +2,12 @@ package pkg
 
 import (
 	"context"
+	"testing"
+
 	pb "github.com/22Fariz22/passbook/server/proto"
 	"github.com/22Fariz22/passbook/server/proto/mock"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestRegister(t *testing.T) {

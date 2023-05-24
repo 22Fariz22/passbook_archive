@@ -1,12 +1,12 @@
 package passbook
 
 import (
-	"github.com/22Fariz22/passbook/cli/pkg"
 	pb "github.com/22Fariz22/passbook/server/proto"
 	"github.com/spf13/cobra"
 )
 
 var addBinaryRequest pb.AddBinaryRequest
+var pathToFile string
 
 var addBinaryCmd = &cobra.Command{
 	Use:     "Binary",
@@ -16,10 +16,5 @@ var addBinaryCmd = &cobra.Command{
 }
 
 func addBinaryCmdRun(cmd *cobra.Command, args []string) {
-	c := pkg.ConnGRPCServer()
 
-	err := pkg.AddBinary(c, &addBinaryRequest)
-	if err != nil {
-		return
-	}
 }
