@@ -97,10 +97,10 @@ func TestUserUseCase_FindById(t *testing.T) {
 	ctx := context.Background()
 
 	userRedisRepository.EXPECT().GetByIDCtx(gomock.Any(), mockUser.UserID.String()).Return(nil, redis.Nil)
-	userPGRepository.EXPECT().FindById(gomock.Any(), mockUser.UserID).Return(mockUser, nil)
+	userPGRepository.EXPECT().FindByID(gomock.Any(), mockUser.UserID).Return(mockUser, nil)
 	userRedisRepository.EXPECT().SetUserCtx(gomock.Any(), mockUser.UserID.String(), 3600, mockUser).Return(nil)
 
-	user, err := userUC.FindById(ctx, mockUser.UserID)
+	user, err := userUC.FindByID(ctx, mockUser.UserID)
 	require.NoError(t, err)
 	require.NotNil(t, user)
 	require.Equal(t, user.UserID, mockUser.UserID)

@@ -108,19 +108,19 @@ func (mr *MockUserPGRepositoryMockRecorder) Create(ctx, user interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUserPGRepository)(nil).Create), ctx, user)
 }
 
-// FindById mocks base method.
-func (m *MockUserPGRepository) FindById(ctx context.Context, userID uuid.UUID) (*entity.User, error) {
+// FindByID mocks base method.
+func (m *MockUserPGRepository) FindByID(ctx context.Context, userID uuid.UUID) (*entity.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindById", ctx, userID)
+	ret := m.ctrl.Call(m, "FindByID", ctx, userID)
 	ret0, _ := ret[0].(*entity.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// FindById indicates an expected call of FindById.
-func (mr *MockUserPGRepositoryMockRecorder) FindById(ctx, userID interface{}) *gomock.Call {
+// FindByID indicates an expected call of FindByID.
+func (mr *MockUserPGRepositoryMockRecorder) FindByID(ctx, userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindById", reflect.TypeOf((*MockUserPGRepository)(nil).FindById), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*MockUserPGRepository)(nil).FindByID), ctx, userID)
 }
 
 // FindByLogin mocks base method.

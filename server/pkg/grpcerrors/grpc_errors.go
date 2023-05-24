@@ -1,23 +1,28 @@
-package grpc_errors
+package grpcerrors
 
 import (
 	"context"
 	"database/sql"
+	"net/http"
+	"strings"
+
 	"github.com/go-redis/redis/v8"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc/codes"
-	"net/http"
-	"strings"
 )
 
 var (
-	ErrNotFound         = errors.New("Not found")
-	ErrNoCtxMetaData    = errors.New("No ctx metadata")
-	ErrInvalidSessionId = errors.New("Invalid session id")
-	ErrEmailExists      = errors.New("Email already exists")
+	//ErrNotFound не найдено
+	ErrNotFound = errors.New("Not found")
+	//ErrNoCtxMetaData no meta
+	ErrNoCtxMetaData = errors.New("No ctx metadata")
+	//ErrInvalidSessionID invalid session
+	ErrInvalidSessionID = errors.New("Invalid session id")
+	//ErrEmailExists login exists
+	ErrEmailExists = errors.New("Login already exists")
 )
 
-// Parse error and get code
+// ParseGRPCErrStatusCode Parse error and get code
 func ParseGRPCErrStatusCode(err error) codes.Code {
 	switch {
 	case errors.Is(err, sql.ErrNoRows):
@@ -32,7 +37,7 @@ func ParseGRPCErrStatusCode(err error) codes.Code {
 		return codes.AlreadyExists
 	case errors.Is(err, ErrNoCtxMetaData):
 		return codes.Unauthenticated
-	case errors.Is(err, ErrInvalidSessionId):
+	case errors.Is(err, ErrInvalidSessionID):
 		return codes.PermissionDenied
 	case strings.Contains(err.Error(), "Validate"):
 		return codes.InvalidArgument
@@ -42,8 +47,8 @@ func ParseGRPCErrStatusCode(err error) codes.Code {
 	return codes.Internal
 }
 
-// Map GRPC errors codes to http status
-func MapGRPCErrCodeToHttpStatus(code codes.Code) int {
+// MapGRPCErrCodeToHttpStatus Map GRPC errors codes to http status
+func MapGRPCErrCodeToHTTPStatus(code codes.Code) int {
 	switch code {
 	case codes.Unauthenticated:
 		return http.StatusUnauthorized

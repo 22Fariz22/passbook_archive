@@ -1,4 +1,3 @@
-//go:generate mockgen -source redis-repository.go -destination mock/redis_repository.go -package mock
 package user
 
 import (
@@ -7,7 +6,10 @@ import (
 	"github.com/22Fariz22/passbook/server/internal/entity"
 )
 
-// Auth Redis repository interface
+
+//go:generate mockgen -source redis-repository.go -destination mock/redis_repository.go -package mock
+
+// UserRedisRepository Auth Redis repository interface
 type UserRedisRepository interface {
 	GetByIDCtx(ctx context.Context, key string) (*entity.User, error)
 	SetUserCtx(ctx context.Context, key string, seconds int, user *entity.User) error

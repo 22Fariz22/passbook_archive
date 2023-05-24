@@ -2,19 +2,20 @@ package usecase
 
 import (
 	"context"
+	"log"
+
 	"github.com/22Fariz22/passbook/server/internal/entity"
 	"github.com/22Fariz22/passbook/server/internal/user"
-	"github.com/22Fariz22/passbook/server/pkg/grpc_errors"
+	"github.com/22Fariz22/passbook/server/pkg/grpcerrors"
 	"github.com/22Fariz22/passbook/server/pkg/logger"
 	userService "github.com/22Fariz22/passbook/server/proto"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
-	"log"
 )
 
 const (
-	userByIdCacheDuration = 3600
+	userByIDCacheDuration = 3600
 )
 
 // User UseCase
@@ -24,8 +25,10 @@ type userUseCase struct {
 	redisRepo  user.UserRedisRepository
 }
 
-// New User UseCase
-func NewUserUseCase(logger logger.Logger, userRepo user.UserPGRepository, redisRepo user.UserRedisRepository) *userUseCase {
+// NewUserUseCase New User UseCase
+func NewUserUseCase(
+	logger logger.Logger, userRepo user.UserPGRepository, redisRepo user.UserRedisRepository,
+) *userUseCase {
 	return &userUseCase{logger: logger, userPgRepo: userRepo, redisRepo: redisRepo}
 }
 
@@ -33,13 +36,13 @@ func NewUserUseCase(logger logger.Logger, userRepo user.UserPGRepository, redisR
 func (u *userUseCase) Register(ctx context.Context, user *entity.User) (*entity.User, error) {
 	existsUser, err := u.userPgRepo.FindByLogin(ctx, user.Login)
 	if existsUser != nil || err == nil {
-		return nil, grpc_errors.ErrEmailExists
+		return nil, grpcerrors.ErrEmailExists
 	}
 
 	return u.userPgRepo.Create(ctx, user)
 }
 
-// Find use by email address
+// FindByLogin Find use by email address
 func (u *userUseCase) FindByLogin(ctx context.Context, login string) (*entity.User, error) {
 	findByLogin, err := u.userPgRepo.FindByLogin(ctx, login)
 	if err != nil {
@@ -51,8 +54,8 @@ func (u *userUseCase) FindByLogin(ctx context.Context, login string) (*entity.Us
 	return findByLogin, nil
 }
 
-// Find use by uuid
-func (u *userUseCase) FindById(ctx context.Context, userID uuid.UUID) (*entity.User, error) {
+// FindByID Find use by uuid
+func (u *userUseCase) FindByID(ctx context.Context, userID uuid.UUID) (*entity.User, error) {
 	cachedUser, err := u.redisRepo.GetByIDCtx(ctx, userID.String())
 	if err != nil && !errors.Is(err, redis.Nil) {
 		u.logger.Errorf("redisRepo.GetByIDCtx", err)
@@ -61,12 +64,12 @@ func (u *userUseCase) FindById(ctx context.Context, userID uuid.UUID) (*entity.U
 		return cachedUser, nil
 	}
 
-	foundUser, err := u.userPgRepo.FindById(ctx, userID)
+	foundUser, err := u.userPgRepo.FindByID(ctx, userID)
 	if err != nil {
-		return nil, errors.Wrap(err, "userPgRepo.FindById")
+		return nil, errors.Wrap(err, "userPgRepo.FindByID")
 	}
 
-	if err := u.redisRepo.SetUserCtx(ctx, foundUser.UserID.String(), userByIdCacheDuration, foundUser); err != nil {
+	if err := u.redisRepo.SetUserCtx(ctx, foundUser.UserID.String(), userByIDCacheDuration, foundUser); err != nil {
 		u.logger.Errorf("redisRepo.SetUserCtx", err)
 	}
 

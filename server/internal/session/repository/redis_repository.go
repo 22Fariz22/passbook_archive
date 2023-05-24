@@ -25,12 +25,12 @@ type sessionRepo struct {
 	cfg         *config.Config
 }
 
-// Session repository constructor
+// NewSessionRepository Session repository constructor
 func NewSessionRepository(redisClient *redis.Client, cfg *config.Config) session.SessRepository {
 	return &sessionRepo{redisClient: redisClient, basePrefix: basePrefix, cfg: cfg}
 }
 
-// Create session in redis
+// CreateSession Create session in redis
 func (s *sessionRepo) CreateSession(ctx context.Context, sess *entity.Session, expire int) (string, error) {
 	sess.SessionID = uuid.New().String()
 	sessionKey := s.createKey(sess.SessionID)
@@ -47,7 +47,7 @@ func (s *sessionRepo) CreateSession(ctx context.Context, sess *entity.Session, e
 	return sess.SessionID, nil
 }
 
-// Get session by id
+// GetSessionByID Get session by id
 func (s *sessionRepo) GetSessionByID(ctx context.Context, sessionID string) (*entity.Session, error) {
 	sessBytes, err := s.redisClient.Get(ctx, s.createKey(sessionID)).Bytes()
 	if err != nil {
@@ -61,7 +61,7 @@ func (s *sessionRepo) GetSessionByID(ctx context.Context, sessionID string) (*en
 	return sess, nil
 }
 
-// Delete session by id
+// DeleteByID Delete session by id
 func (s *sessionRepo) DeleteByID(ctx context.Context, sessionID string) error {
 	if err := s.redisClient.Del(ctx, s.createKey(sessionID)).Err(); err != nil {
 		return errors.Wrap(err, "sessionRepo.DeleteByID")

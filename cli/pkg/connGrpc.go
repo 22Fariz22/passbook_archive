@@ -7,6 +7,7 @@ import (
 	"log"
 )
 
+// ConnGRPCServer соединят с сервером
 func ConnGRPCServer() pb.UserServiceClient {
 	conn, err := grpc.Dial(":5001", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {

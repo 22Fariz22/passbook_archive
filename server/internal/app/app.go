@@ -25,7 +25,7 @@ import (
 	"google.golang.org/grpc/keepalive"
 )
 
-// GRPC Auth Server
+// Server GRPC Auth Server
 type Server struct {
 	logger      logger.Logger
 	cfg         *config.Config
@@ -33,7 +33,7 @@ type Server struct {
 	redisClient *redis.Client
 }
 
-// Server constructor
+// NewAuthServer Server constructor
 func NewAuthServer(logger logger.Logger, cfg *config.Config, db *sqlx.DB, redisClient *redis.Client) *Server {
 	return &Server{logger: logger, cfg: cfg, db: db, redisClient: redisClient}
 }

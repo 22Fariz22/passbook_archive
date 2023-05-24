@@ -27,7 +27,3 @@ var getFullListCmd = &cobra.Command{
 			fmt.Println(v)
 		}
 	}}
-
-//func init() {
-//	RootCmd.AddCommand(getFullListCmd)
-//}

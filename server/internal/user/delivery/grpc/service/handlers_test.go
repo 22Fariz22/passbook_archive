@@ -151,7 +151,7 @@ func Test_usersService_FindByID(t *testing.T) {
 		}
 
 		//ожидаемый ответ от UC
-		userUC.EXPECT().FindById(gomock.Any(), userID).Return(user, nil)
+		userUC.EXPECT().FindByID(gomock.Any(), userID).Return(user, nil)
 
 		response, err := authServerGRPC.FindByID(context.Background(), reqValue)
 

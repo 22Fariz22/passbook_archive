@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// App config struct
+// Config App  struct
 type Config struct {
 	Server   ServerConfig
 	Postgres PostgresConfig
@@ -17,7 +17,7 @@ type Config struct {
 	Logger   Logger
 }
 
-// Server config struct
+// ServerConfig config struct
 type ServerConfig struct {
 	AppVersion        string
 	Port              string
@@ -46,7 +46,7 @@ type Logger struct {
 	Level             string
 }
 
-// Postgresql config
+// PostgresConfig config
 type PostgresConfig struct {
 	PostgresqlHost     string
 	PostgresqlPort     string
@@ -57,7 +57,7 @@ type PostgresConfig struct {
 	PgDriver           string
 }
 
-// Redis config
+// RedisConfig Redis config
 type RedisConfig struct {
 	RedisAddr      string
 	RedisPassword  string
@@ -85,7 +85,7 @@ type Session struct {
 	Expire int
 }
 
-// Load config file from given path
+// LoadConfig Load config file from given path
 func LoadConfig(filename string) (*viper.Viper, error) {
 	v := viper.New()
 
@@ -102,7 +102,7 @@ func LoadConfig(filename string) (*viper.Viper, error) {
 	return v, nil
 }
 
-// Parse config file
+// ParseConfig Parse config file
 func ParseConfig(v *viper.Viper) (*Config, error) {
 	var c Config
 
@@ -115,7 +115,7 @@ func ParseConfig(v *viper.Viper) (*Config, error) {
 	return &c, nil
 }
 
-// Get config
+// GetConfig Get config
 func GetConfig(configPath string) (*Config, error) {
 	cfgFile, err := LoadConfig(configPath)
 	if err != nil {

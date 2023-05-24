@@ -1,13 +1,12 @@
 package passbook
 
 import (
-	"fmt"
 	"github.com/22Fariz22/passbook/cli/pkg"
 	pb "github.com/22Fariz22/passbook/server/proto"
 	"github.com/spf13/cobra"
 )
 
-var AddTextRequest pb.AddTextRequest
+var addTextRequest pb.AddTextRequest
 
 var addTextCmd = &cobra.Command{
 	Use:     "text",
@@ -19,9 +18,8 @@ var addTextCmd = &cobra.Command{
 func addTextCmdRun(cmd *cobra.Command, args []string) {
 	c := pkg.ConnGRPCServer()
 
-	err := pkg.AddText(c, &AddTextRequest)
+	err := pkg.AddText(c, &addTextRequest)
 	if err != nil {
 		return
 	}
-	fmt.Println("text added")
 }

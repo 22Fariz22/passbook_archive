@@ -1,12 +1,13 @@
 package redis
 
 import (
+	"time"
+
 	"github.com/22Fariz22/passbook/server/config"
 	"github.com/go-redis/redis/v8"
-	"time"
 )
 
-// Returns new redis client
+// NewRedisClient Returns new redis client
 func NewRedisClient(cfg *config.Config) *redis.Client {
 	redisHost := cfg.Redis.RedisAddr
 

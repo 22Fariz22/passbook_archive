@@ -5,6 +5,10 @@ on:
       - main
   pull_request:
   workflow_dispatch:
+  paths-ignore:
+    - "/server/proto"
+    - "/cli/bin"
+    - "/cli/build.sh"
 jobs:
   unit:
     concurrency:

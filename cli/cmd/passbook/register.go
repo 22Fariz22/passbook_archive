@@ -22,9 +22,3 @@ var registerCmd = &cobra.Command{
 
 	},
 }
-
-//func init() {
-//	RootCmd.AddCommand(registerCmd)
-//	registerCmd.Flags().StringVarP(&registerReq.Login, "login", "l", "", "it is string to reverse")
-//	registerCmd.Flags().StringVarP(&registerReq.Password, "password", "p", "", "it is string to reverse")
-//}

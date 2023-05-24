@@ -10,13 +10,13 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-// InterceptorManager
+// InterceptorManager struct
 type InterceptorManager struct {
 	logger logger.Logger
 	cfg    *config.Config
 }
 
-// InterceptorManager constructor
+// NewInterceptorManager InterceptorManager constructor
 func NewInterceptorManager(logger logger.Logger, cfg *config.Config) *InterceptorManager {
 	return &InterceptorManager{logger: logger, cfg: cfg}
 }

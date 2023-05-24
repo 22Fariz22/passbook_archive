@@ -1,7 +1,6 @@
 package passbook
 
 import (
-	"fmt"
 	"github.com/22Fariz22/passbook/cli/pkg"
 	pb "github.com/22Fariz22/passbook/server/proto"
 	"github.com/spf13/cobra"
@@ -21,11 +20,5 @@ var logoutCmd = &cobra.Command{
 			log.Fatal(err)
 			return
 		}
-		fmt.Println("you got out")
 	},
 }
-
-//func init() {
-//	RootCmd.AddCommand(logoutCmd)
-//
-//}

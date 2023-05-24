@@ -51,11 +51,11 @@ func (r *UserRepository) FindByLogin(ctx context.Context, login string) (*entity
 	return user, nil
 }
 
-// FindById Find user by uuid
-func (r *UserRepository) FindById(ctx context.Context, userID uuid.UUID) (*entity.User, error) {
+// FindByID Find user by uuid
+func (r *UserRepository) FindByID(ctx context.Context, userID uuid.UUID) (*entity.User, error) {
 	user := &entity.User{}
 	if err := r.db.GetContext(ctx, user, findByIDQuery, userID); err != nil {
-		return nil, errors.Wrap(err, "FindById.GetContext")
+		return nil, errors.Wrap(err, "FindByID.GetContext")
 	}
 
 	return user, nil
