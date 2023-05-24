@@ -38,7 +38,7 @@ func Execute(cmd *cobra.Command) error {
 
 	//addBinaryCmd сохряняет произвольные бинарные данные
 	RootCmd.AddCommand(addBinaryCmd)
-	addBinaryCmd.Flags().StringVarP(&addBinaryRequest.Title, "title", "t", "", "add title")
+	addBinaryCmd.Flags().StringVarP(&titleBinary, "title", "t", "", "add title")
 	addBinaryCmd.Flags().StringVarP(&pathToFile, "path", "p", "", "path to file")
 	addBinaryCmd.MarkFlagRequired("data")
 
