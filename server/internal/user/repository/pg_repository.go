@@ -66,7 +66,7 @@ func (r *UserRepository) AddAccount(ctx context.Context, userID string, request 
 	encLogin := encrypt(request.Login)
 	encPassword := encrypt(request.Password)
 
-	err, _ := r.db.ExecContext(ctx, addAccountQuery, userID, request.GetTitle(), encLogin, encPassword)
+	_, err := r.db.ExecContext(ctx, addAccountQuery, userID, request.GetTitle(), encLogin, encPassword)
 	if err != nil {
 		log.Println("err repo AddAccount in r.db.ExecContext", err)
 	}
@@ -77,7 +77,7 @@ func (r *UserRepository) AddAccount(ctx context.Context, userID string, request 
 func (r *UserRepository) AddText(ctx context.Context, userID string, request *userService.AddTextRequest) error {
 	encData := encrypt(request.Data)
 
-	err, _ := r.db.ExecContext(ctx, addTextQuery, userID, request.GetTitle(), encData)
+	_, err := r.db.ExecContext(ctx, addTextQuery, userID, request.GetTitle(), encData)
 	if err != nil {
 		log.Println("err repo AddText in r.db.ExecContext", err)
 	}
@@ -86,7 +86,7 @@ func (r *UserRepository) AddText(ctx context.Context, userID string, request *us
 
 // AddBinary add binary data
 func (r *UserRepository) AddBinary(ctx context.Context, userID string, request *userService.AddBinaryRequest) error {
-	err, _ := r.db.ExecContext(ctx, addTextQuery, userID, request.Title, request.Data)
+	_, err := r.db.ExecContext(ctx, addBinaryQuery, userID, request.Title, request.Data)
 	if err != nil {
 		log.Println("err repo AddBinary in r.db.ExecContext", err)
 	}
@@ -187,6 +187,7 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]stri
 	if err != nil {
 		log.Println("err getByFullListAccountsQuery:", err)
 	}
+
 	for _, v := range accounts {
 		decrLogin := decrypt(v.Login)
 		decrPassword := decrypt(v.Password)
@@ -197,7 +198,9 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]stri
 	err = r.db.SelectContext(ctx, &texts, getByFullListTextQuery, userID)
 	if err != nil {
 		log.Println("err getByFullListTextQuery:", err)
+		return nil, err
 	}
+
 	for _, v := range texts {
 		decrData := decrypt(v.Data)
 		everythingFullList = append(everythingFullList, "Text-> "+"title:"+v.Title+" data:"+decrData)
@@ -208,6 +211,7 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]stri
 	if err != nil {
 		log.Println("err getByFullListCardQuery:", err)
 	}
+
 	for _, v := range cards {
 		decrCardNumber := decrypt(v.CardNumber)
 		decrName := decrypt(v.Name)
@@ -222,6 +226,7 @@ func (r *UserRepository) GetFullList(ctx context.Context, userID string) ([]stri
 	if err != nil {
 		log.Println("err getByFullListBinaryQuery:", err)
 	}
+
 	for _, v := range binaries {
 		everythingFullList = append(everythingFullList, "Binary-> "+"title:"+v.Title+"data:"+string(v.Data))
 	}

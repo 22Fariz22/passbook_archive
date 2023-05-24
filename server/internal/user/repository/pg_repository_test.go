@@ -81,7 +81,7 @@ func TestUserRepository_FindBylogin(t *testing.T) {
 	require.Equal(t, foundUser.Login, mockUser.Login)
 }
 
-func TestUserRepository_FindById(t *testing.T) {
+func TestUserRepository_FindByID(t *testing.T) {
 	t.Parallel()
 
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
