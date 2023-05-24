@@ -66,7 +66,7 @@ func (r *UserRepository) AddAccount(ctx context.Context, userID string, request 
 	encLogin := encrypt(request.Login)
 	encPassword := encrypt(request.Password)
 
-	err, _ := r.db.ExecContext(ctx, addAccountQuery, userID, request.GetTitle(), encLogin, encPassword)
+	_, err := r.db.ExecContext(ctx, addAccountQuery, userID, request.GetTitle(), encLogin, encPassword)
 	if err != nil {
 		log.Println("err repo AddAccount in r.db.ExecContext", err)
 	}
@@ -80,7 +80,6 @@ func (r *UserRepository) AddText(ctx context.Context, userID string, request *us
 	_, err := r.db.ExecContext(ctx, addTextQuery, userID, request.GetTitle(), encData)
 	if err != nil {
 		log.Println("err repo AddText in r.db.ExecContext", err)
-		return err
 	}
 	return nil
 }
@@ -90,7 +89,6 @@ func (r *UserRepository) AddBinary(ctx context.Context, userID string, request *
 	_, err := r.db.ExecContext(ctx, addBinaryQuery, userID, request.Title, request.Data)
 	if err != nil {
 		log.Println("err repo AddBinary in r.db.ExecContext", err)
-		return err
 	}
 	return nil
 }
