@@ -1,0 +1,130 @@
+// protoc --go_out=plugins=grpc:. *.proto
+
+syntax = "proto3";
+
+package passbook;
+
+option go_package = "github.com/22fariz22/passbook";
+
+message Session {
+  string session = 1;
+}
+
+message User {
+  string uuid = 1;
+  string login = 2;
+  string password = 3;
+}
+
+message RegisterRequest {
+  string login = 1;
+  string password = 2;
+
+}
+
+message RegisterResponse {
+  User user = 1;
+}
+
+message FindByLoginRequest {
+  string login = 1;
+}
+
+message FindByLoginResponse {
+  User user = 1;
+}
+
+message FindByIDRequest {
+  string uuid = 1;
+}
+
+message FindByIDResponse {
+  User user = 1;
+}
+
+message LoginRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  User user = 1;
+  string session_id = 2;
+}
+
+message GetMeRequest{}
+
+message GetMeResponse {
+  User user = 1;
+}
+
+message LogoutRequest{}
+
+message LogoutResponse {}
+
+service UserService{
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc FindByLogin(FindByLoginRequest) returns (FindByLoginResponse);
+  rpc FindByID(FindByIDRequest) returns (FindByIDResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc GetMe(GetMeRequest) returns(GetMeResponse);
+  rpc Logout(LogoutRequest) returns(LogoutResponse);
+
+  rpc AddAccount(AddAccountRequest) returns(AddAccountResponse);
+  rpc AddText(AddTextRequest) returns(AddTextResponse);
+  rpc AddBinary(AddBinaryRequest) returns(AddBinaryResponse);
+  rpc AddCard(AddCardRequest) returns(AddCardResponse);
+  rpc GetByTitle(GetByTitleRequest) returns(GetByTitleResponse);
+  rpc GetFullList(GetFullListRequest) returns(GetFullListResponse);
+}
+
+message AddAccountRequest{
+  string title = 1;
+  string login = 2;
+  string password = 3;
+}
+message AddAccountResponse{
+}
+
+message AddTextRequest{
+  string title = 1;
+  string data = 2;
+}
+message AddTextResponse{}
+
+message AddBinaryRequest{
+  string title = 1;
+  bytes data = 2;
+}
+message AddBinaryResponse{}
+
+message AddCardRequest{
+  string title = 1;
+  string name = 2;
+  string card_number = 3;
+  string date_exp = 4;
+  string cvc_code = 5;
+}
+message AddCardResponse{}
+
+
+message GetByTitleRequest{
+  string title = 1;
+}
+message GetByTitleResponse{
+  repeated string data = 1;
+}
+
+message GetFullListRequest{}
+message GetFullListResponse{
+  repeated string data = 1;
+}
+
+message GetAllTitlesRequest{};
+message GetAllTitlesResponse{
+  repeated string data = 1;
+}
+
+
+
+
