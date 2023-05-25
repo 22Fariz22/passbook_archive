@@ -16,6 +16,44 @@ import (
 	userService "github.com/22Fariz22/passbook/server/proto"
 )
 
+//func Test_usersService_AddAccount(t *testing.T) {
+//	t.Parallel()
+//
+//	ctrl := gomock.NewController(t)
+//	defer ctrl.Finish()
+//	userUC := mock.NewMockUserUseCase(ctrl)
+//	sessUC := mockSessUC.NewMockSessionUseCase(ctrl)
+//	apiLogger := logger.NewAPILogger(nil)
+//	cfg := &config.Config{Session: config.Session{
+//		Expire: 10,
+//	}}
+//
+//	authServerGRPC := NewAuthServerGRPC(apiLogger, cfg, userUC, sessUC)
+//
+//	//вставляем наш session_id в metadata
+//	md := metadata.New(map[string]string{"session_id": string("session")})
+//	ctx := metadata.NewOutgoingContext(context.Background(), md)
+//
+//	reqValue := &userService.AddAccountRequest{
+//		Title:    "ya",
+//		Login:    "leo",
+//		Password: "123",
+//	}
+//
+//	t.Parallel()
+//	//userID := uuid.New()
+//
+//	//userCase
+//	userUC.EXPECT().AddAccount(gomock.Any(), gomock.Any(), &reqValue).Return(nil)
+//
+//	resp, err := authServerGRPC.AddAccount(ctx, reqValue)
+//	fmt.Println("resp:", resp)
+//	require.NoError(t, err)
+//	//require.NotNil(t, response)
+//	//require.Equal(t, reqValue.Login, response.User.Login)
+//
+//}
+
 func TestUsersService_Register(t *testing.T) {
 	t.Parallel()
 
@@ -160,3 +198,40 @@ func Test_usersService_FindByID(t *testing.T) {
 		require.Equal(t, reqValue.Uuid, response.User.Uuid)
 	})
 }
+
+//func Test_usersService_GetFullList(t *testing.T) {
+//	t.Parallel()
+//
+//	ctrl := gomock.NewController(t)
+//	defer ctrl.Finish()
+//	userUC := mock.NewMockUserUseCase(ctrl)
+//	sessUC := mockSessUC.NewMockSessionUseCase(ctrl)
+//	apiLogger := logger.NewAPILogger(nil)
+//	cfg := &config.Config{Session: config.Session{
+//		Expire: 10,
+//	}}
+//	authServerGRPC := NewAuthServerGRPC(apiLogger, cfg, userUC, sessUC)
+//
+//	userID := uuid.New()
+//
+//	//reqValue := &userService.FindByIDRequest{Uuid: userID.String()}
+//
+//	t.Run("GetFullList", func(t *testing.T) {
+//		//t.Parallel()
+//		//вставляем наш session_id в metadata
+//		md := metadata.New(map[string]string{"session_id": "session"})
+//		ctx := metadata.NewOutgoingContext(context.Background(), md)
+//
+//		user := &userService.GetFullListRequest{}
+//		//var arrValue []string
+//
+//		//ожидаемый ответ от UC
+//		userUC.EXPECT().GetFullList(ctx, userID.String()).Return([]string{}, nil)
+//
+//		response, err := authServerGRPC. GetFullList(ctx, user)
+//		fmt.Println("response:", response)
+//		require.NoError(t, err)
+//		//require.NotNil(t, response)
+//		//require.Equal(t, reqValue.Uuid, response.User.Uuid)
+//	})
+//}

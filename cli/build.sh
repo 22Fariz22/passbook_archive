@@ -1,5 +1,5 @@
 #!/bin/bash
-package_name="passbook"
+package_name="secretbook"
 package="main.go"
 build_directory="bin/"
 
